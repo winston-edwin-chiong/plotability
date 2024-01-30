@@ -1,0 +1,31 @@
+{
+    "CONTINUOUS_DISTRIBUTIONS": [
+      {"label": "Beta", "value": "beta"},
+      {"label": "Cauchy", "value": "cauchy"},
+      {"label": "Chi", "value": "chi"},
+      {"label": "Chi-Squared", "value": "chi2"},
+      {"label": "Erlang", "value": "erlang"},
+      {"label": "Exponential", "value": "expon"},
+      {"label": "Gamma", "value": "gamma"},
+      {"label": "Laplace", "value": "laplace"},
+      {"label": "Logistic", "value": "logistic"},
+      {"label": "Normal", "value": "norm"},
+      {"label": "Pareto", "value": "pareto"},
+      {"label": "Rayleigh", "value": "rayleigh"},
+      {"label": "Student's T", "value": "t"},
+      {"label": "Uniform", "value": "uniform"}
+    ],
+    "DISCRETE_DISTRIBUTIONS": [
+      {"label": "Bernoulli", "value": "bernoulli"},
+      {"label": "Beta-Binomial", "value": "betabinom"},
+      {"label": "Binomial", "value": "binom"},
+      {"label": "Geometric", "value": "geom"},
+      {"label": "Hypergeometric", "value": "hypergeom"},
+      {"label": "Logarithmic", "value": "logser"},
+      {"label": "Negative Binomial", "value": "nbinom"},
+      {"label": "Poisson", "value": "poisson"},
+      {"label": "Uniform Discrete", "value": "randint"},
+      {"label": "Zipf", "value": "zipf"}
+    ]
+  }
+  
