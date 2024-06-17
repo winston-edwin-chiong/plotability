@@ -3,7 +3,7 @@ import { Line } from "react-chartjs-2";
 
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 
-export default function ContinuousChart({ data, bounds }: { data: number[], bounds: (number | null)[]}) {
+export default function ContinuousChart({ data, bounds }: { data: number[], bounds: number[]}) {
   const chartData = {
     labels: createArrayWithStep(bounds[0] as number, bounds[1] as number, 0.05),
     datasets: [

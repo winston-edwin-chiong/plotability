@@ -1,49 +1,55 @@
 import '@mantine/core/styles.css';
-import distributions from './distributions.json';
-import { MantineProvider, Button, Radio, Group, Select, NumberInput } from '@mantine/core';
+import distributions_data from './distributions_data.json';
+import { MantineProvider, Button, Radio, Group, Select, NumberInput, Slider, Stack } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
-import * as stdlib from '@stdlib/stats-base-dists'
 import { useState } from 'react';
 import ContinuousChart from './components/ContinuousChart';
+import { getDistributionData} from './utils/calculations';
+import { Data, Distribution } from './interfaces/interfaces';
 
-interface Data {
-  x: number[];
-  y: number[];
-}
 
 export default function App() {
 
   const [radioValue, setRadioValue] = useInputState<string>("all");
-  const [selectedDistribution, setSelectedDistribution] = useInputState<string | null>(null);
-  const [paramsValues, setParamsValues] = useState<(number | null)[]>([]);
+  const [distribution, setDistribution] = useInputState<Distribution>({ name: '', type: '', params: []});
+  const [selectedDistribution, setSelectedDistribution] = useInputState<string[]>(['', '']);
+  const [paramsValues, setParamsValues] = useState<(number | string)[]>([]);
   const [data, setData] = useState<Data>({ x: [], y: [] });
-  const [bounds, setBounds] = useState<(number | null)[]>([null, null]);
+  const [bounds, setBounds] = useState<(number | string)[]>(['', '']);
 
   const handleDistributionChange = (value: string | null) => {
-    setSelectedDistribution(value);
-    const newParamsValues = distributions.distributions
+    const type = distributions_data.distributions.find(dist => dist.value === value)?.type;
+    console.log("Type is: ", type);  
+    value && setSelectedDistribution([value, type as string]);
+    const newParamsValues = distributions_data.distributions
       .find(dist => dist.value === value)?.params
-      .map((_, index) => paramsValues[index] || null);
-    setParamsValues(newParamsValues as (number | null)[]);
+      .map((_, index) => paramsValues[index] || paramsValues[index] === 0 ? paramsValues[index] : ''); // 0 is a valid parameter value. 
+    newParamsValues && setParamsValues(newParamsValues as (number | string)[]);
   }
 
   const handlePlotButtonClick = () => {
-    const type = distributions.distributions.find(dist => dist.value === selectedDistribution)?.type;
-    const y = getIterator(selectedDistribution, type as string, paramsValues as number[], bounds as number[]);
+    const y = getDistributionData(selectedDistribution[0], selectedDistribution[1], paramsValues as number[], bounds as number[]);
     const x = [...bounds] as number[];
     setData({ x, y });
     console.log(data);
   }
 
   const handleParamChange = (value: number | string, index: number) => {
-    value = typeof value === "string" ? parseFloat(value) : value;
     const newParamsValues = [...paramsValues];
     newParamsValues[index] = value;
     setParamsValues(newParamsValues);
   }
 
+  const handleSliderChange = (value: number | string, index: number) => {
+    const newParamsValues = [...paramsValues];
+    newParamsValues[index] = value;
+    setParamsValues(newParamsValues);
+    const y = getDistributionData(selectedDistribution[0], selectedDistribution[1], newParamsValues as number[], bounds as number[]);
+    const x = [...bounds] as number[];
+    setData({ x, y });
+  }
+
   const handleBoundsChange = (value: number | string, index: number) => {
-    value = typeof value === "string" ? parseFloat(value) : value;
     const newBounds = [...bounds];
     newBounds[index] = value;
     setBounds(newBounds);
@@ -65,74 +71,44 @@ export default function App() {
       <Select
         placeholder="Select your favorite distribution!"
         data={radioValue === "all"
-          ? distributions.distributions.sort((a, b) => a.label.localeCompare(b.label))
-          : distributions.distributions.filter(dist => dist.type === radioValue).sort((a, b) => a.label.localeCompare(b.label))}
+          ? distributions_data.distributions.sort((a, b) => a.label.localeCompare(b.label))
+          : distributions_data.distributions.filter(dist => dist.type === radioValue).sort((a, b) => a.label.localeCompare(b.label))}
+        value={selectedDistribution[0] || ''}
         onChange={(value) => handleDistributionChange(value)}
         searchable={true}
+        allowDeselect={false}
+        clearable={true}
+        nothingFoundMessage="No distribution found!"
       />
-      {distributions.distributions.find(dist => dist.value === selectedDistribution)?.params.map((parameter, index) => (
-        <NumberInput key={index} label={parameter} onChange={(value) => handleParamChange(value, index)} />
+      {distributions_data.distributions.find(dist => dist.value === selectedDistribution[0])?.params.map((parameter, index) => (
+        <Stack key={index}>
+          <NumberInput
+            value={paramsValues[index] || paramsValues[index] === 0 ? paramsValues[index] : ''}
+            label={parameter}
+            onChange={(value) => handleParamChange(value, index)}
+          />
+          <Slider
+            value={(paramsValues[index] || paramsValues[index] === 0 ? paramsValues[index] : undefined) as number}
+            onChange={(value) => handleSliderChange(value, index)}
+          />
+        </Stack>
       ))}
-      <NumberInput label="Left Bound" onChange={(value) => handleBoundsChange(value, 0)}/>
-      <NumberInput label="Right Bound" key="right" onChange={(value) => handleBoundsChange(value, 1)}/>
+      <NumberInput label="Left Bound" onChange={(value) => handleBoundsChange(value, 0)} />
+      <NumberInput label="Right Bound" key="right" onChange={(value) => handleBoundsChange(value, 1)} />
       <Button variant='default' onClick={() => handlePlotButtonClick()}>PLOT!</Button>
 
       {/* Render state in the DOM for debugging */}
       <div style={{ marginTop: '20px' }}>
         <h3>Debug Information:</h3>
-        <p><strong>Selected Distribution:</strong> {selectedDistribution}</p>
+        <p><strong>Selected Distribution:</strong> {selectedDistribution[0]} && {selectedDistribution[1]}</p>
         <p><strong>Params Values:</strong> {JSON.stringify(paramsValues)}</p>
         <p><strong>Bounds Values:</strong> {JSON.stringify(bounds)}</p>
-        {/* <p><strong>Data Values:</strong> {JSON.stringify(data)}</p> */}
       </div>
-      
-      {/* Render the line chart */}
+
       <div style={{ marginTop: '20px' }}>
         <ContinuousChart data={data.y} bounds={data.x} />
       </div>
 
     </MantineProvider>
   </>
-}
-
-function getIterator(dist: string | null, type: string, params: number[], bounds: number[]): number[] {
-  const data: number[] = [];
-
-  switch (type) {
-
-    case "continuous":
-
-      switch (dist) {
-
-        case "normal": {
-            const pdf = stdlib.normal.pdf;
-            for (let i = bounds[0]; i <= bounds[1]; i += 0.05) {
-              data.push(pdf(i, params[0], params[1]));
-            }
-        }
-        break;
-
-        case "exponential": {
-            const pdf = stdlib.exponential.pdf;
-            for (let i = bounds[0]; i <= bounds[1]; i += 0.05) {
-              data.push(pdf(i, params[0]));
-            }
-        }
-        break;
-      }
-
-      break;
-
-    case "discrete":
-      
-      switch (dist) {
-
-        case "binomial": {
-          for (let i = bounds[0]; i <= bounds[1]; i += 1) {
-            data.push(stdlib.binomial.pmf(i, Math.floor(params[0]), params[1]));
-          }
-        }
-      }
-    }
-  return data;
 }
