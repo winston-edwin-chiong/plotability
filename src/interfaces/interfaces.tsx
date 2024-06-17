@@ -9,4 +9,9 @@ interface Distribution {
     params: (number | string)[];
   }
 
-export type { Data, Distribution }
+interface XBounds {
+    left: number | string;
+    right: number | string;
+}
+
+export type { Data, Distribution, XBounds }
