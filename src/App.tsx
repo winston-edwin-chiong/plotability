@@ -4,14 +4,20 @@ import { MantineProvider, Button, Radio, Group, Select, NumberInput, Slider, Sta
 import { useInputState } from '@mantine/hooks';
 import { useState } from 'react';
 import ContinuousChart from './components/ContinuousChart';
-import { getDistributionData } from './utils/calculations';
+import { getDistributionData} from './utils/calculations';
 import { Data, Distribution } from './interfaces/interfaces';
 
 
-export default function App() {
+//* Note that '0' is a valid parameter value for some distributions. 
+//* `distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : ''` 
+//* is necessary to handle this case.
 
-  const [radioValue, setRadioValue] = useInputState<string>("all");
-  const [distribution, setDistribution] = useState<Distribution>({ name: '', type: '', params: [] });
+
+export default function App() {
+  
+  const [distCategory, setdistCategory] = useInputState<string>("all");
+  const [distFunction, setDistFunction] = useInputState<string>("pdf_pmf");
+  const [distribution, setDistribution] = useState<Distribution>({ name: '', type: '', params: []});
   const [data, setData] = useState<Data>({ x: [], y: [] });
   const [bounds, setBounds] = useState<(number | string)[]>(['', '']);
 
@@ -19,12 +25,12 @@ export default function App() {
     const type = distributions_data.distributions.find(dist => dist.value === value)?.type;
     const newParamsValues = distributions_data.distributions
       .find(dist => dist.value === value)?.params
-      .map((_, index) => distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : ''); // 0 is a valid parameter value. 
-    value && newParamsValues && setDistribution({ name: value, type: type as string, params: newParamsValues as (number | string)[] });
+      .map((_, index) => distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : '');
+    value && newParamsValues && setDistribution({name: value, type: type as string, params: newParamsValues as (number | string)[]});
   }
 
   const handlePlotButtonClick = () => {
-    const y = getDistributionData(distribution.name, distribution.type, distribution.params as number[], bounds as number[]);
+    const y = getDistributionData(distribution.name, distribution.type, distribution.params as number[], bounds as number[], distFunction);
     const x = [...bounds] as number[];
     setData({ x: x, y: y });
     console.log(data);
@@ -41,7 +47,7 @@ export default function App() {
     newParamsValues[index] = value;
     setDistribution({ ...distribution, params: newParamsValues })
 
-    const y = getDistributionData(distribution.name, distribution.type, newParamsValues as number[], bounds as number[]);
+    const y = getDistributionData(distribution.name, distribution.type, newParamsValues as number[], bounds as number[], distFunction);
     const x = [...bounds] as number[];
     setData({ x: x, y: y });
   }
@@ -53,11 +59,11 @@ export default function App() {
   }
 
 
-  return <>
+  return (
     <MantineProvider>
       <Radio.Group
-        value={radioValue}
-        onChange={(value) => setRadioValue(value)}
+        value={distCategory}
+        onChange={(value) => setdistCategory(value)}
       >
         <Group>
           <Radio value="all" label="All" />
@@ -67,9 +73,9 @@ export default function App() {
       </Radio.Group>
       <Select
         placeholder="Select your favorite distribution!"
-        data={radioValue === "all"
+        data={distCategory === "all"
           ? distributions_data.distributions.sort((a, b) => a.label.localeCompare(b.label))
-          : distributions_data.distributions.filter(dist => dist.type === radioValue).sort((a, b) => a.label.localeCompare(b.label))}
+          : distributions_data.distributions.filter(dist => dist.type === distCategory).sort((a, b) => a.label.localeCompare(b.label))}
         value={distribution.name || ''}
         onChange={(value) => handleDistributionChange(value)}
         searchable={true}
@@ -77,6 +83,15 @@ export default function App() {
         clearable={true}
         nothingFoundMessage="No distribution found!"
       />
+      <Radio.Group
+        value={distFunction}
+        onChange={(value) => setDistFunction(value)}
+      >
+        <Group>
+          <Radio value="pdf_pmf" label="PDF / PMF" />
+          <Radio value="cdf" label="CDF" />
+        </Group>
+      </Radio.Group>
       {distributions_data.distributions.find(dist => dist.value === distribution.name)?.params.map((parameter, index) => (
         <Stack key={index}>
           <NumberInput
@@ -90,7 +105,7 @@ export default function App() {
           />
         </Stack>
       ))}
-      <NumberInput label="Left Bound" onChange={(value) => handleBoundsChange(value, 0)} />
+      <NumberInput label="Left Bound" key="left" onChange={(value) => handleBoundsChange(value, 0)} />
       <NumberInput label="Right Bound" key="right" onChange={(value) => handleBoundsChange(value, 1)} />
       <Button variant='default' onClick={() => handlePlotButtonClick()}>PLOT!</Button>
 
@@ -98,6 +113,7 @@ export default function App() {
       <div style={{ marginTop: '20px' }}>
         <h3>Debug Information:</h3>
         <p><strong>Selected Distribution:</strong> {distribution.name} && {distribution.type}</p>
+        <p><strong>Calculation Type: </strong>{distFunction}</p>
         <p><strong>Params Values:</strong> {JSON.stringify(distribution.params)}</p>
         <p><strong>Bounds Values:</strong> {JSON.stringify(bounds)}</p>
       </div>
@@ -107,5 +123,5 @@ export default function App() {
       </div>
 
     </MantineProvider>
-  </>
+  );
 }

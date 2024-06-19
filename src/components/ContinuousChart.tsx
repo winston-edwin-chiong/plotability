@@ -5,7 +5,7 @@ Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 
 export default function ContinuousChart({ data, bounds }: { data: number[], bounds: number[]}) {
   const chartData = {
-    labels: createArrayWithStep(bounds[0] as number, bounds[1] as number, 0.05),
+    labels: createArrayWithStep(bounds[0] as number, bounds[1] as number, 0.025), //! Make sure the step is the same as the one used in the calculations.
     datasets: [
       {
         label: "Probability Density Function",
@@ -13,7 +13,7 @@ export default function ContinuousChart({ data, bounds }: { data: number[], boun
         fill: true,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.1,
-        pointRadius: 0,
+        // pointRadius: 0,
       },
     ],
   };
