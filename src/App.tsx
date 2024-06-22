@@ -3,8 +3,10 @@ import distributions_data from './distributions_data.json';
 import { MantineProvider, Button, Radio, Group, Select, NumberInput, Slider, Stack } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
 import { useState } from 'react';
+import Header from './components/Header';
 import ContinuousChart from './components/ContinuousChart';
-import { getDistributionData} from './utils/calculations';
+import DiscreteChart from './components/DiscreteChart';
+import { getDistributionData } from './utils/calculations';
 import { Data, Distribution } from './interfaces/interfaces';
 
 
@@ -30,10 +32,8 @@ export default function App() {
   }
 
   const handlePlotButtonClick = () => {
-    const y = getDistributionData(distribution.name, distribution.type, distribution.params as number[], bounds as number[], distFunction);
-    const x = [...bounds] as number[];
-    setData({ x: x, y: y });
-    console.log(data);
+    const data = getDistributionData(distribution.name, distribution.type, distribution.params as number[], distFunction);
+    setData(data);
   }
 
   const handleParamChange = (value: number | string, index: number) => {
@@ -47,9 +47,8 @@ export default function App() {
     newParamsValues[index] = value;
     setDistribution({ ...distribution, params: newParamsValues })
 
-    const y = getDistributionData(distribution.name, distribution.type, newParamsValues as number[], bounds as number[], distFunction);
-    const x = [...bounds] as number[];
-    setData({ x: x, y: y });
+    const data = getDistributionData(distribution.name, distribution.type, newParamsValues as number[], distFunction);
+    setData(data);
   }
 
   const handleBoundsChange = (value: number | string, index: number) => {
@@ -61,6 +60,7 @@ export default function App() {
 
   return (
     <MantineProvider>
+      <Header />
       <Radio.Group
         value={distCategory}
         onChange={(value) => setdistCategory(value)}
@@ -118,8 +118,9 @@ export default function App() {
         <p><strong>Bounds Values:</strong> {JSON.stringify(bounds)}</p>
       </div>
 
+      //TODO: The charts are changing based on the distribution type, but this is not expected behavior.
       <div style={{ marginTop: '20px' }}>
-        <ContinuousChart data={data.y} bounds={data.x} />
+        {distribution.type === 'continuous' ? <ContinuousChart data={data} /> : <DiscreteChart data={data} />}
       </div>
 
     </MantineProvider>

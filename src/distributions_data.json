@@ -27,10 +27,10 @@
     {"label": "Uniform", "value": "uniform", "type": "continuous", "params": ["a", "b"]},
     {"label": "Bernoulli", "value": "bernoulli", "type": "discrete", "params": ["p"]},
     {"label": "Binomial", "value": "binomial", "type": "discrete", "params": ["n", "p"]},
-    {"label": "Discrete Uniform", "value": "discrete-uniform", "type": "discrete", "params": ["a", "b"]},
+    {"label": "Discrete Uniform", "value": "discrete_uniform", "type": "discrete", "params": ["a", "b"]},
     {"label": "Geometric", "value": "geometric", "type": "discrete", "params": ["p"]},
     {"label": "Hypergeometric", "value": "hypergeometric", "type": "discrete", "params": ["N", "K", "n"]},
-    {"label": "Negative Binomial", "value": "negative-binomial", "type": "discrete", "params": ["r", "p"]},
+    {"label": "Negative Binomial", "value": "negative_binomial", "type": "discrete", "params": ["r", "p"]},
     {"label": "Poisson", "value": "poisson", "type": "discrete", "params": ["lambda"]}
   ]
 }
