@@ -1,17 +1,12 @@
 interface Data {
-    x: number[];
-    y: number[];
-  }
-
-interface Distribution {
-    name: string;
-    type: string; // Continuous or Discrete
-    params: (number | string)[];
-  }
-
-interface XBounds {
-    left: number | string;
-    right: number | string;
+  x: number[];
+  y: number[];
 }
 
-export type { Data, Distribution, XBounds }
+interface Distribution {
+  name: string;
+  type: string; // Continuous or Discrete
+  params: { [key: string]: number | string }
+}
+
+export type { Data, Distribution };

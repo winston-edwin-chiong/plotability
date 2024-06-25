@@ -8,46 +8,68 @@ import ContinuousChart from './components/ContinuousChart';
 import DiscreteChart from './components/DiscreteChart';
 import { getDistributionData } from './utils/calculations';
 import { Data, Distribution } from './interfaces/interfaces';
+import { testValidate } from './utils/validation';
 
-
-//* Note that '0' is a valid parameter value for some distributions. 
-//* `distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : ''` 
-//* is necessary to handle this case.
-
+/** Note that '0' is a valid parameter value for some distributions. 
+* `distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : ''` 
+* is necessary to handle this case. 
+*/
 
 export default function App() {
   
   const [distCategory, setdistCategory] = useInputState<string>("all");
   const [distFunction, setDistFunction] = useInputState<string>("pdf_pmf");
-  const [distribution, setDistribution] = useState<Distribution>({ name: '', type: '', params: []});
+  const [distribution, setDistribution] = useState<Distribution>({ name: '', type: '', params: {} });
   const [data, setData] = useState<Data>({ x: [], y: [] });
   const [bounds, setBounds] = useState<(number | string)[]>(['', '']);
 
   const handleDistributionChange = (value: string | null) => {
+    if (!value) return;
+
+    // Find the distribution parameters from the data.
     const type = distributions_data.distributions.find(dist => dist.value === value)?.type;
     const newParamsValues = distributions_data.distributions
       .find(dist => dist.value === value)?.params
-      .map((_, index) => distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : '');
-    value && newParamsValues && setDistribution({name: value, type: type as string, params: newParamsValues as (number | string)[]});
+      .reduce((o, key) => Object.assign(o, { [key]: '' }), {}) as { [key: string]: number | string };
+    
+    // Copy over values up to the length of the new distribution's parameters.
+    const oldKeys = Object.keys(distribution.params);
+    const newKeys = Object.keys(newParamsValues);
+    for (let i = 0; i < newKeys.length; i++) {
+      if (i < oldKeys.length) {
+        newParamsValues[newKeys[i]] = distribution.params[oldKeys[i]]
+      } else {
+        newParamsValues[newKeys[i]] = '';
+      } 
+    }
+
+    setDistribution({name: value, type: type as string, params: newParamsValues});
   }
 
   const handlePlotButtonClick = () => {
-    const data = getDistributionData(distribution.name, distribution.type, distribution.params as number[], distFunction);
+    const validationMessage = testValidate(distribution);
+    if (validationMessage) {
+      alert(validationMessage);
+      return;
+    }
+
+    const data = getDistributionData(distribution, distFunction);
     setData(data);
   }
 
-  const handleParamChange = (value: number | string, index: number) => {
-    const newParamsValues = [...distribution.params];
-    newParamsValues[index] = value;
+  const handleParamChange = (value: number | string, parameter: string) => {
+    const newParamsValues = {...distribution.params};
+    newParamsValues[parameter] = value;
     setDistribution({ ...distribution, params: newParamsValues })
   }
 
-  const handleSliderChange = (value: number | string, index: number) => {
-    const newParamsValues = [...distribution.params];
-    newParamsValues[index] = value;
-    setDistribution({ ...distribution, params: newParamsValues })
+  const handleSliderChange = (value: number | string, parameter: string) => {
+    const newParamsValues = {...distribution.params};
+    newParamsValues[parameter] = value;
+    const newDistribution = { ...distribution, params: newParamsValues }
+    setDistribution(newDistribution);
 
-    const data = getDistributionData(distribution.name, distribution.type, newParamsValues as number[], distFunction);
+    const data = getDistributionData(newDistribution, distFunction);
     setData(data);
   }
 
@@ -92,17 +114,21 @@ export default function App() {
           <Radio value="cdf" label="CDF" />
         </Group>
       </Radio.Group>
-      {distributions_data.distributions.find(dist => dist.value === distribution.name)?.params.map((parameter, index) => (
-        <Stack key={index}>
+      {distributions_data.distributions.find(dist => dist.value === distribution.name)?.params.map((parameter) => (
+        <Stack key={parameter}>
           <NumberInput
-            value={distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : ''}
+            value={distribution.params[parameter]}
             label={parameter}
-            onChange={(value) => handleParamChange(value, index)}
+            onChange={(value) => handleParamChange(value, parameter)}
           />
-          <Slider
-            value={(distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : undefined) as number}
-            onChange={(value) => handleSliderChange(value, index)}
-          />
+          {distribution.params[parameter] !== '' && <Slider // Only render the slider if the parameter has a value.
+            value={distribution.params[parameter] as number}
+            onChange={(value) => handleSliderChange(value, parameter)}
+            //TODO: Min, max, and step values are hardcoded for now. Adjust later with the distribution data.
+            min={-10}
+            max={10}
+            step={1}
+          />}
         </Stack>
       ))}
       <NumberInput label="Left Bound" key="left" onChange={(value) => handleBoundsChange(value, 0)} />
@@ -112,13 +138,12 @@ export default function App() {
       {/* Render state in the DOM for debugging */}
       <div style={{ marginTop: '20px' }}>
         <h3>Debug Information:</h3>
-        <p><strong>Selected Distribution:</strong> {distribution.name} && {distribution.type}</p>
+        <p><strong>Distribution Object:</strong> {JSON.stringify(distribution)}</p>
         <p><strong>Calculation Type: </strong>{distFunction}</p>
-        <p><strong>Params Values:</strong> {JSON.stringify(distribution.params)}</p>
         <p><strong>Bounds Values:</strong> {JSON.stringify(bounds)}</p>
       </div>
 
-      //TODO: The charts are changing based on the distribution type, but this is not expected behavior.
+      //TODO: The charts are changing based on the distribution type, but this is not expected behavior. Maybe keep the chart type in the data state?
       <div style={{ marginTop: '20px' }}>
         {distribution.type === 'continuous' ? <ContinuousChart data={data} /> : <DiscreteChart data={data} />}
       </div>
