@@ -11,7 +11,16 @@ const continuousDists: {
   arcsine: {
     pdf: stdlib_dists.arcsine.pdf,
     cdf: stdlib_dists.arcsine.cdf,
-    xBounds: () => [0, 1],
+    xBounds: (params) => [
+      stdlib_dists.arcsine.quantile(
+        0.05,
+        ...(Object.values(params) as [number, number])
+      ),
+      stdlib_dists.arcsine.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
+    ],
   },
   beta: {
     pdf: stdlib_dists.beta.pdf,
@@ -23,15 +32,24 @@ const continuousDists: {
     cdf: stdlib_dists.betaprime.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.betaprime.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.betaprime.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   cauchy: {
     pdf: stdlib_dists.cauchy.pdf,
     cdf: stdlib_dists.cauchy.cdf,
     xBounds: (params) => [
-      stdlib_dists.cauchy.quantile(0.05, ...(Object.values(params) as [number, number])),
-      stdlib_dists.cauchy.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.cauchy.quantile(
+        0.05,
+        ...(Object.values(params) as [number, number])
+      ),
+      stdlib_dists.cauchy.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   chi: {
@@ -47,20 +65,29 @@ const continuousDists: {
     cdf: stdlib_dists.chisquare.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.chisquare.quantile(0.95, ...(Object.values(params) as [number])),
+      stdlib_dists.chisquare.quantile(
+        0.95,
+        ...(Object.values(params) as [number])
+      ),
     ],
   },
   cosine: {
     pdf: stdlib_dists.cosine.pdf,
     cdf: stdlib_dists.cosine.cdf,
-    xBounds: (params) => [params["mu"] - params["s"], params["mu"] + params["s"]],
+    xBounds: (params) => [
+      params["mu"] - params["s"],
+      params["mu"] + params["s"],
+    ],
   },
   erlang: {
     pdf: stdlib_dists.erlang.pdf,
     cdf: stdlib_dists.erlang.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.erlang.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.erlang.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   exponential: {
@@ -68,7 +95,10 @@ const continuousDists: {
     cdf: stdlib_dists.exponential.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.exponential.quantile(0.95, ...(Object.values(params) as [number])),
+      stdlib_dists.exponential.quantile(
+        0.95,
+        ...(Object.values(params) as [number])
+      ),
     ],
   },
   f: {
@@ -76,7 +106,10 @@ const continuousDists: {
     cdf: stdlib_dists.f.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.f.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.f.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   frechet: {
@@ -95,15 +128,24 @@ const continuousDists: {
     cdf: stdlib_dists.gamma.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.gamma.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.gamma.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   gumbel: {
     pdf: stdlib_dists.gumbel.pdf,
     cdf: stdlib_dists.gumbel.cdf,
     xBounds: (params) => [
-      stdlib_dists.gumbel.quantile(0.05, ...(Object.values(params) as [number, number])),
-      stdlib_dists.gumbel.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.gumbel.quantile(
+        0.05,
+        ...(Object.values(params) as [number, number])
+      ),
+      stdlib_dists.gumbel.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   invgamma: {
@@ -111,7 +153,10 @@ const continuousDists: {
     cdf: stdlib_dists.invgamma.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.invgamma.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.invgamma.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   kumaraswamy: {
@@ -123,8 +168,14 @@ const continuousDists: {
     pdf: stdlib_dists.laplace.pdf,
     cdf: stdlib_dists.laplace.cdf,
     xBounds: (params) => [
-      stdlib_dists.laplace.quantile(0.05, ...(Object.values(params) as [number, number])),
-      stdlib_dists.laplace.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.laplace.quantile(
+        0.05,
+        ...(Object.values(params) as [number, number])
+      ),
+      stdlib_dists.laplace.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   levy: {
@@ -132,15 +183,24 @@ const continuousDists: {
     cdf: stdlib_dists.levy.cdf,
     xBounds: (params) => [
       params["mu"],
-      stdlib_dists.levy.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.levy.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   logistic: {
     pdf: stdlib_dists.logistic.pdf,
     cdf: stdlib_dists.logistic.cdf,
     xBounds: (params) => [
-      stdlib_dists.logistic.quantile(0.05, ...(Object.values(params) as [number, number])),
-      stdlib_dists.logistic.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.logistic.quantile(
+        0.05,
+        ...(Object.values(params) as [number, number])
+      ),
+      stdlib_dists.logistic.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   lognormal: {
@@ -148,23 +208,35 @@ const continuousDists: {
     cdf: stdlib_dists.lognormal.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.lognormal.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.lognormal.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   normal: {
     pdf: stdlib_dists.normal.pdf,
     cdf: stdlib_dists.normal.cdf,
     xBounds: (params) => [
-      stdlib_dists.normal.quantile(0.001, ...(Object.values(params) as [number, number])),
-      stdlib_dists.normal.quantile(0.999, ...(Object.values(params) as [number, number])),
+      stdlib_dists.normal.quantile(
+        0.001,
+        ...(Object.values(params) as [number, number])
+      ),
+      stdlib_dists.normal.quantile(
+        0.999,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
-  pareto: {
+  pareto1: {
     pdf: stdlib_dists.pareto1.pdf,
     cdf: stdlib_dists.pareto1.cdf,
     xBounds: (params) => [
       params["alpha"],
-      stdlib_dists.pareto1.quantile(0.95, ...(Object.values(params) as [number, number])),
+      stdlib_dists.pareto1.quantile(
+        0.95,
+        ...(Object.values(params) as [number, number])
+      ),
     ],
   },
   rayleigh: {
@@ -172,7 +244,10 @@ const continuousDists: {
     cdf: stdlib_dists.rayleigh.cdf,
     xBounds: (params) => [
       0,
-      stdlib_dists.rayleigh.quantile(0.95, ...(Object.values(params) as [number])),
+      stdlib_dists.rayleigh.quantile(
+        0.95,
+        ...(Object.values(params) as [number])
+      ),
     ],
   },
   t: {
@@ -221,7 +296,10 @@ const discreteDists: {
     pmf: stdlib_dists.geometric.pmf,
     cdf: stdlib_dists.geometric.cdf,
     xBounds: (params) =>
-      createArrayFromAtoB(0, stdlib_dists.geometric.quantile(0.999, params["p"])),
+      createArrayFromAtoB(
+        0,
+        stdlib_dists.geometric.quantile(0.999, params["p"])
+      ),
   },
   hypergeometric: {
     pmf: stdlib_dists.hypergeometric.pmf,
@@ -245,7 +323,7 @@ const discreteDists: {
       createArrayFromAtoB(
         0,
         stdlib_dists.negativeBinomial.quantile(
-          0.95,
+          0.999,
           ...(Object.values(params) as [number, number])
         )
       ),
@@ -266,11 +344,15 @@ function calculateContinuousDistData(
   const y: number[] = [];
   const x: number[] = [];
   const numPoints = 1000;
-  for (let i = xBounds[0]-1; i <= xBounds[1]+1; i += (xBounds[1]-1 - xBounds[0]+1) / numPoints) {
+  for (
+    let i = xBounds[0] - 1;
+    i <= xBounds[1] + 1;
+    i += (xBounds[1] - 1 - xBounds[0] + 1) / numPoints
+  ) {
     y.push(Number(distFunc(i, ...Object.values(params)).toFixed(8)));
     x.push(Number(i.toFixed(1)));
   }
-  return {x: x, y: y};
+  return { x: x, y: y };
 }
 
 function calculateDiscreteDistData(
@@ -284,23 +366,22 @@ function calculateDiscreteDistData(
     y.push(distFunc(i, ...Object.values(params)));
     x.push(i);
   });
-  return {x: x, y: y};
+  return { x: x, y: y };
 }
-  
+
 function createArrayFromAtoB(a: number, b: number): number[] {
   return Array.from({ length: b - a + 1 }, (_, i) => a + i);
 }
 
 export function getDistributionData(
   dist: Distribution,
-  distFunc: string,
+  distFunc: string
 ): Data {
   const name = dist.name;
   const type = dist.type;
   const params = dist.params as { [key: string]: number };
 
   switch (type) {
-
     case "continuous": {
       const continuousFuncTable: {
         [key: string]: (x: number, ...params: number[]) => number;
@@ -333,5 +414,5 @@ export function getDistributionData(
       );
     }
   }
-  return {x: [], y: []};
+  return { x: [], y: [] };
 }

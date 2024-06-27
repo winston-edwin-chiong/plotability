@@ -8,18 +8,15 @@ import ContinuousChart from './components/ContinuousChart';
 import DiscreteChart from './components/DiscreteChart';
 import { getDistributionData } from './utils/calculations';
 import { Data, Distribution } from './interfaces/interfaces';
-import { testValidate } from './utils/validation';
+import { validateDistribution, getSliders } from './utils/validation';
 
-/** Note that '0' is a valid parameter value for some distributions. 
-* `distribution.params[index] || distribution.params[index] === 0 ? distribution.params[index] : ''` 
-* is necessary to handle this case. 
-*/
+/* Note that '0' is a valid parameter value for some distributions. */
 
 export default function App() {
   
   const [distCategory, setdistCategory] = useInputState<string>("all");
   const [distFunction, setDistFunction] = useInputState<string>("pdf_pmf");
-  const [distribution, setDistribution] = useState<Distribution>({ name: '', type: '', params: {} });
+  const [distribution, setDistribution] = useState<Distribution>({ name: '', type: '', params: {}, });
   const [data, setData] = useState<Data>({ x: [], y: [] });
   const [bounds, setBounds] = useState<(number | string)[]>(['', '']);
 
@@ -47,8 +44,8 @@ export default function App() {
   }
 
   const handlePlotButtonClick = () => {
-    const validationMessage = testValidate(distribution);
-    if (validationMessage) {
+    const validationMessage = validateDistribution(distribution);
+    if (validationMessage) { //TODO: Change this to add error states to the inputs and sliders.
       alert(validationMessage);
       return;
     }
@@ -68,6 +65,12 @@ export default function App() {
     newParamsValues[parameter] = value;
     const newDistribution = { ...distribution, params: newParamsValues }
     setDistribution(newDistribution);
+
+    const validationMessage = validateDistribution(newDistribution);
+    if (validationMessage) { //TODO: Change this to add error states to the inputs and sliders.
+      console.log(validationMessage);
+      return;
+    }
 
     const data = getDistributionData(newDistribution, distFunction);
     setData(data);
@@ -124,10 +127,9 @@ export default function App() {
           {distribution.params[parameter] !== '' && <Slider // Only render the slider if the parameter has a value.
             value={distribution.params[parameter] as number}
             onChange={(value) => handleSliderChange(value, parameter)}
-            //TODO: Min, max, and step values are hardcoded for now. Adjust later with the distribution data.
-            min={-10}
-            max={10}
-            step={1}
+            min={getSliders(distribution)?.[parameter].min}
+            max={getSliders(distribution)?.[parameter].max}
+            step={getSliders(distribution)?.[parameter].step}
           />}
         </Stack>
       ))}
