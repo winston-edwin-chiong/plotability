@@ -11,8 +11,8 @@ export default function DiscreteChart({ data }: { data: Data }) {
       {
         label: "Probability Mass Function",
         data: data.y,
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgb(75, 192, 192)",
+        backgroundColor: "rgba(249, 115, 22, 0.6)",
+        borderColor: "rgb(249 115 22)",
         borderWidth: 1,
       },
     ],

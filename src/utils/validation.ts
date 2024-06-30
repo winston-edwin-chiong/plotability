@@ -8,14 +8,17 @@ export function validateDistribution(dist: Distribution) {
   switch (dist.type) {
     case "continuous": {
       return validateContinuousDists[dist.name]?.validate(
-        dist.params as { [key: string]: number }
+        dist.params as { [parameter: string]: number }
       );
     }
     case "discrete": {
       return validateDiscreteDists[dist.name]?.validate(
-        dist.params as { [key: string]: number }
+        dist.params as { [parameter: string]: number }
       );
     }
+
+    default:
+      return "";
   }
 }
 
@@ -23,14 +26,17 @@ export function getSliders(dist: Distribution) {
   switch (dist.type) {
     case "continuous": {
       return validateContinuousDists[dist.name]?.sliders(
-        dist.params as { [key: string]: number }
+        dist.params as { [parameter: string]: number }
       );
     }
     case "discrete": {
       return validateDiscreteDists[dist.name]?.sliders(
-        dist.params as { [key: string]: number }
+        dist.params as { [parameter: string]: number }
       );
     }
+
+    default:
+      return {};
   }
 }
 
@@ -44,10 +50,10 @@ function testNull(dist: Distribution) {
 }
 
 const validateContinuousDists: {
-  [key: string]: {
-    validate: (params: { [key: string]: number }) => string;
-    sliders: (params: { [key: string]: number }) => {
-      [key: string]: { min: number; max: number; step: number };
+  [distribution: string]: {
+    validate: (params: { [parameter: string]: number }) => string;
+    sliders: (params: { [parameter: string]: number }) => {
+      [parameter: string]: { min: number; max: number; step: number };
     };
   };
 } = {
@@ -428,10 +434,10 @@ const validateContinuousDists: {
 };
 
 const validateDiscreteDists: {
-  [key: string]: {
-    validate: (params: { [key: string]: number }) => string;
-    sliders: (params: { [key: string]: number }) => {
-      [key: string]: { min: number; max: number; step: number };
+  [distribution: string]: {
+    validate: (params: { [parameter: string]: number }) => string;
+    sliders: (params: { [parameter: string]: number }) => {
+      [parameter: string]: { min: number; max: number; step: number };
     };
   };
 } = {

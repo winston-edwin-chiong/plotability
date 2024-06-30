@@ -1,14 +1,12 @@
 import '@mantine/core/styles.css';
 import distributions_data from './distributions_data.json';
-import { MantineProvider, Button, Radio, Group, Select, NumberInput, Slider, Stack } from '@mantine/core';
+import { MantineProvider, Button, Radio, Group, Select } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
 import { useState } from 'react';
-import Header from './components/Header';
-import ContinuousChart from './components/ContinuousChart';
-import DiscreteChart from './components/DiscreteChart';
+import { Header, ContinuousChart, DiscreteChart, ParameterSettings } from './components';
 import { getDistributionData } from './utils/calculations';
 import { Data, Distribution } from './interfaces/interfaces';
-import { validateDistribution, getSliders } from './utils/validation';
+import { validateDistribution } from './utils/validation';
 
 /* Note that '0' is a valid parameter value for some distributions. */
 
@@ -18,10 +16,11 @@ export default function App() {
   const [distFunction, setDistFunction] = useInputState<string>("pdf_pmf");
   const [distribution, setDistribution] = useState<Distribution>({ name: '', type: '', params: {}, });
   const [data, setData] = useState<Data>({ x: [], y: [] });
-  const [bounds, setBounds] = useState<(number | string)[]>(['', '']);
+  const [chartType, setChartType] = useState<string | null>(null);
+  const [numDistributions, setNumDistributions] = useState<number>(0);
 
   const handleDistributionChange = (value: string | null) => {
-    if (!value) return;
+    if (!value || value === distribution.name) return;
 
     // Find the distribution parameters from the data.
     const type = distributions_data.distributions.find(dist => dist.value === value)?.type;
@@ -52,6 +51,7 @@ export default function App() {
 
     const data = getDistributionData(distribution, distFunction);
     setData(data);
+    setChartType(distribution.type);
   }
 
   const handleParamChange = (value: number | string, parameter: string) => {
@@ -66,6 +66,7 @@ export default function App() {
     const newDistribution = { ...distribution, params: newParamsValues }
     setDistribution(newDistribution);
 
+    // The sliders also update the chart.
     const validationMessage = validateDistribution(newDistribution);
     if (validationMessage) { //TODO: Change this to add error states to the inputs and sliders.
       console.log(validationMessage);
@@ -74,14 +75,8 @@ export default function App() {
 
     const data = getDistributionData(newDistribution, distFunction);
     setData(data);
+    setChartType(distribution.type);
   }
-
-  const handleBoundsChange = (value: number | string, index: number) => {
-    const newBounds = [...bounds];
-    newBounds[index] = value;
-    setBounds(newBounds);
-  }
-
 
   return (
     <MantineProvider>
@@ -117,37 +112,25 @@ export default function App() {
           <Radio value="cdf" label="CDF" />
         </Group>
       </Radio.Group>
-      {distributions_data.distributions.find(dist => dist.value === distribution.name)?.params.map((parameter) => (
-        <Stack key={parameter}>
-          <NumberInput
-            value={distribution.params[parameter]}
-            label={parameter}
-            onChange={(value) => handleParamChange(value, parameter)}
-          />
-          {distribution.params[parameter] !== '' && <Slider // Only render the slider if the parameter has a value.
-            value={distribution.params[parameter] as number}
-            onChange={(value) => handleSliderChange(value, parameter)}
-            min={getSliders(distribution)?.[parameter].min}
-            max={getSliders(distribution)?.[parameter].max}
-            step={getSliders(distribution)?.[parameter].step}
-          />}
-        </Stack>
-      ))}
-      <NumberInput label="Left Bound" key="left" onChange={(value) => handleBoundsChange(value, 0)} />
-      <NumberInput label="Right Bound" key="right" onChange={(value) => handleBoundsChange(value, 1)} />
+      <ParameterSettings 
+        distribution={distribution} 
+        inputOnChange={handleParamChange} 
+        sliderOnChange={handleSliderChange}
+      />
       <Button variant='default' onClick={() => handlePlotButtonClick()}>PLOT!</Button>
+      {distribution.name && <Button variant='default' onClick={() => setNumDistributions(numDistributions + 1)}>+ ADD ANOTHER!</Button>}
 
       {/* Render state in the DOM for debugging */}
       <div style={{ marginTop: '20px' }}>
         <h3>Debug Information:</h3>
         <p><strong>Distribution Object:</strong> {JSON.stringify(distribution)}</p>
         <p><strong>Calculation Type: </strong>{distFunction}</p>
-        <p><strong>Bounds Values:</strong> {JSON.stringify(bounds)}</p>
+        <p><strong>Number of Distributions:</strong> {numDistributions}</p>
       </div>
 
-      //TODO: The charts are changing based on the distribution type, but this is not expected behavior. Maybe keep the chart type in the data state?
       <div style={{ marginTop: '20px' }}>
-        {distribution.type === 'continuous' ? <ContinuousChart data={data} /> : <DiscreteChart data={data} />}
+      {chartType === 'continuous' && <ContinuousChart data={data} />}
+      {chartType === 'discrete' && <DiscreteChart data={data} />}
       </div>
 
     </MantineProvider>

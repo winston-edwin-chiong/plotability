@@ -5,10 +5,9 @@ interface Data {
 
 interface Distribution {
   name: string;
-  type: string; // Continuous or Discrete
-  params: { [key: string]: number | string }
-  params_errors?: { [key: string]: string }
+  type: string; // "continuous" or "discrete"
+  params: { [parameter: string]: number | string };
+  params_errors?: { [parameter: string]: string };
 }
 
 export type { Data, Distribution };
- 

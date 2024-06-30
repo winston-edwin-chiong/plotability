@@ -1,11 +1,16 @@
 import * as stdlib_dists from "@stdlib/stats-base-dists";
 import { Data, Distribution } from "../interfaces/interfaces";
 
+/**
+ * An object containing the continuous distributions and their associated functions, 
+ * and a function that calculates x-value bounds from a distribution's parameters.
+ */
+
 const continuousDists: {
-  [key: string]: {
+  [distribution: string]: {
     pdf: (x: number, ...params: number[]) => number;
     cdf: (x: number, ...params: number[]) => number;
-    xBounds: (params: { [key: string]: number }) => [number, number];
+    xBounds: (params: { [parameter: string]: number }) => [number, number];
   };
 } = {
   arcsine: {
@@ -270,11 +275,15 @@ const continuousDists: {
   },
 };
 
+/**
+ * An object containing the discrete distributions and their associated functions, 
+ * and a function that calculates x-value bounds from a distribution's parameters.
+ */
 const discreteDists: {
-  [key: string]: {
+  [distribution: string]: {
     pmf: (x: number, ...params: number[]) => number;
     cdf: (x: number, ...params: number[]) => number;
-    xBounds: (params: { [key: string]: number }) => number[];
+    xBounds: (params: { [parameter: string]: number }) => number[];
   };
 } = {
   bernoulli: {
@@ -332,13 +341,27 @@ const discreteDists: {
     pmf: stdlib_dists.poisson.pmf,
     cdf: stdlib_dists.poisson.cdf,
     xBounds: (params) =>
-      createArrayFromAtoB(0, stdlib_dists.poisson.quantile(0.95, params["mu"])),
+      createArrayFromAtoB(
+        stdlib_dists.poisson.quantile(0.001, params["lambda"]),
+        stdlib_dists.poisson.quantile(0.999, params["lambda"])
+      ),
   },
 };
 
+/**
+ * This function calculates the data for a continuous distribution.
+ * 
+ * @param distFunc The distribution function that will be used to calculate the data. 
+ * 
+ * @param params The parameters of the distribution, as an object. Passed to `distFunc`.
+ * 
+ * @param xBounds The bounds of the x-axis, as an array.
+ * 
+ * @returns A `Data` object containing the x- and y-values of the distribution.
+ */
 function calculateContinuousDistData(
   distFunc: (x: number, ...params: number[]) => number,
-  params: { [key: string]: number },
+  params: { [parameter: string]: number },
   xBounds: number[]
 ): Data {
   const y: number[] = [];
@@ -355,9 +378,20 @@ function calculateContinuousDistData(
   return { x: x, y: y };
 }
 
+/**
+ * This function calculates the data for a discrete distribution.
+ * 
+ * @param distFunc The distribution function that will be used to calculate the data. 
+ * 
+ * @param params The parameters of the distribution, as an object. Passed to `distFunc`.
+ * 
+ * @param xBounds The discrete x-values to evaluate the distribution at.
+ * 
+ * @returns A `Data` object containing the x- and y-values of the distribution.
+ */
 function calculateDiscreteDistData(
   distFunc: (x: number, ...params: number[]) => number,
-  params: { [key: string]: number },
+  params: { [parameter: string]: number },
   xBounds: number[]
 ): Data {
   const y: number[] = [];
@@ -369,22 +403,41 @@ function calculateDiscreteDistData(
   return { x: x, y: y };
 }
 
+/**
+ * This function creates an array of numbers from `a` to `b`.
+ * 
+ * @param a The start of the array.
+ * 
+ * @param b The end of the array.
+ * 
+ * @returns An array of numbers from `a` to `b`.
+ */
 function createArrayFromAtoB(a: number, b: number): number[] {
   return Array.from({ length: b - a + 1 }, (_, i) => a + i);
 }
 
+/**
+ * This function calculates the data for a distribution.
+ * 
+ * @param dist The `Distribution` object.
+ * 
+ * @param distFunc The distribution function that will be used to calculate the data. 
+ * 
+ * @returns A `Data` object containing the x- and y-values of the distribution.
+ */
 export function getDistributionData(
   dist: Distribution,
   distFunc: string
 ): Data {
   const name = dist.name;
   const type = dist.type;
-  const params = dist.params as { [key: string]: number };
+  const params = dist.params as { [parameter: string]: number };
 
   switch (type) {
     case "continuous": {
+      // Type gymnastics to make TypeScript happy :)
       const continuousFuncTable: {
-        [key: string]: (x: number, ...params: number[]) => number;
+        [func: string]: (x: number, ...params: number[]) => number;
       } = {
         pdf_pmf: continuousDists[name].pdf,
         cdf: continuousDists[name].cdf,
@@ -399,14 +452,16 @@ export function getDistributionData(
     }
 
     case "discrete": {
+      // Type gymnastics to make TypeScript happy :)
       const discreteFuncTable: {
-        [key: string]: (x: number, ...params: number[]) => number;
+        [func: string]: (x: number, ...params: number[]) => number;
       } = {
         pdf_pmf: discreteDists[name].pmf,
         cdf: discreteDists[name].cdf,
       };
       const func = discreteFuncTable[distFunc];
-
+       //? const func_alt = discreteDists[name][distFunc as "pmf" | "cdf"];
+      
       return calculateDiscreteDistData(
         func,
         params,
