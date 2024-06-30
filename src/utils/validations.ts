@@ -404,8 +404,8 @@ const validateContinuousDists: {
   },
   triangular: {
     validate: (params) => {
-      if (params["c"] < params["a"] || params["c"] > params["b"]) {
-        return "Parameter c must be between a and b!";
+      if (params["c"] < params["a"] || params["c"] > params["b"] || params["a"] > params["b"]) {
+        return "Parameters must satisfy a <= c <= b!";
       }
       return "";
     },

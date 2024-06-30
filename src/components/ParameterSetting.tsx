@@ -1,54 +1,69 @@
 import "@mantine/core/styles.css";
-import distributions_data from "../distributions_data.json";
+import distributions_data from '../distributions_data.json';
 import { Slider, NumberInput, Group, Stack } from "@mantine/core";
 import { Distribution } from "../interfaces/interfaces";
 import { getSliders } from "../utils/validations";
 import { useState } from "react";
 
+
 export default function ParameterSettings({
   distribution,
   inputOnChange,
   sliderOnChange,
-  sliderOnChangeEnd
 }: {
   distribution: Distribution;
   inputOnChange: (value: number | string, parameter: string) => void;
   sliderOnChange: (value: number | string, parameter: string) => void;
-  sliderOnChangeEnd: (value: number | string, parameter: string) => void;
 }) {
   return (
     <>
-      {distributions_data.distributions
-        .find((dist) => dist.value === distribution.name)
-        ?.params.map((parameter) => (
-          <Stack key={parameter}>
-            <NumberInput
-              value={distribution.params[parameter] as number}
-              label={parameter}
-              onChange={(value) => inputOnChange(value, parameter)}
-            />
-            <ParameterSlider
-              distribution={distribution}
-              parameter={parameter}
-              sliderOnChange={sliderOnChange}
-              sliderOnChangeEnd={sliderOnChangeEnd}
-            />
-          </Stack>
-        ))}
+    {distributions_data.distributions.find(dist => dist.value === distribution.name)?.params.map((parameter) => (
+      <Stack key={parameter}>
+        <ParameterInput
+          distribution={distribution}
+          parameter={parameter}
+          onChange={inputOnChange}
+        />
+        <ParameterSlider
+          distribution={distribution}
+          parameter={parameter}
+          onChange={sliderOnChange} 
+        />
+      </Stack>
+    ))}
     </>
+);
+}
+
+
+function ParameterInput({
+  distribution,
+  parameter,
+  onChange,
+}: {
+  distribution: Distribution;
+  parameter: string;
+  onChange: (value: number | string, parameter: string) => void;
+}) {
+  return (
+    <NumberInput
+      value={distribution.params[parameter] as number}
+      label={parameter}
+      onChange={(value) => onChange(value, parameter)}
+      required
+    />
   );
 }
+
 
 function ParameterSlider({
   distribution,
   parameter,
-  sliderOnChange,
-  sliderOnChangeEnd
+  onChange,
 }: {
   distribution: Distribution;
   parameter: string;
-  sliderOnChange: (value: number | string, parameter: string) => void;
-  sliderOnChangeEnd: (value: number | string, parameter: string) => void;
+  onChange: (value: number | string, parameter: string) => void;
 }) {
   const sliders = getSliders(distribution);
 
@@ -73,24 +88,26 @@ function ParameterSlider({
         min={sliderSettings.min}
         max={sliderSettings.max}
         step={sliderSettings.step}
-        onChange={(value) => sliderOnChange(value, parameter)}
-        onChangeEnd={(value) => sliderOnChangeEnd(value, parameter)}
+        onChange={(value) => onChange(value, parameter)}
       />
       <Group align="center" justify="center">
         <NumberInput
           value={sliderSettings.min}
           label="Min"
           onChange={(value) => handleSliderSettingChange(value, "min")}
+          hideControls
         />
         <NumberInput
           value={sliderSettings.max}
           label="Max"
           onChange={(value) => handleSliderSettingChange(value, "max")}
+          hideControls
         />
         <NumberInput
           value={sliderSettings.step}
           label="Step"
           onChange={(value) => handleSliderSettingChange(value, "step")}
+          hideControls
         />
       </Group>
       <div>Slider Settings: {JSON.stringify(sliderSettings)}</div>

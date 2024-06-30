@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Header, ContinuousChart, DiscreteChart, ParameterSettings } from './components';
 import { getDistributionData } from './utils/calculations';
 import { Data, Distribution } from './interfaces/interfaces';
-import { validateDistribution } from './utils/validation';
+import { validateDistribution } from './utils/validations';
 
 /* Note that '0' is a valid parameter value for some distributions. */
 
@@ -60,13 +60,13 @@ export default function App() {
     setDistribution({ ...distribution, params: newParamsValues })
   }
 
-  const handleSliderChange = (value: number | string, parameter: string) => {
+  const handleSliderChangeEnd = (value: number | string, parameter: string) => {
+    // The sliders also update the chart. This function is called when the user stops dragging the slider.
     const newParamsValues = {...distribution.params};
     newParamsValues[parameter] = value;
     const newDistribution = { ...distribution, params: newParamsValues }
     setDistribution(newDistribution);
 
-    // The sliders also update the chart.
     const validationMessage = validateDistribution(newDistribution);
     if (validationMessage) { //TODO: Change this to add error states to the inputs and sliders.
       console.log(validationMessage);
@@ -115,7 +115,8 @@ export default function App() {
       <ParameterSettings 
         distribution={distribution} 
         inputOnChange={handleParamChange} 
-        sliderOnChange={handleSliderChange}
+        sliderOnChange={handleParamChange}
+        sliderOnChangeEnd={(handleSliderChangeEnd)}
       />
       <Button variant='default' onClick={() => handlePlotButtonClick()}>PLOT!</Button>
       {distribution.name && <Button variant='default' onClick={() => setNumDistributions(numDistributions + 1)}>+ ADD ANOTHER!</Button>}
