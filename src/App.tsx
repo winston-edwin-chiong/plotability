@@ -23,7 +23,7 @@ export default function App() {
     name: "",
     type: "",
     params: {},
-    paramErrors: {},
+    errors: {},
   });
   const [data, setData] = useState<Data>({ x: [], y: [] });
   const [chartType, setChartType] = useState<string>("");
@@ -56,14 +56,14 @@ export default function App() {
       name: value,
       type: type as "" | "continuous" | "discrete",
       params: newParamsValues,
-      paramErrors: {},
+      errors: {},
     });
   };
 
   const handlePlotButtonClick = () => {
     // Validate the distribution parameters before plotting.
     const errors = validateDistribution(distribution);
-    setDistribution({ ...distribution, paramErrors: errors });
+    setDistribution({ ...distribution, errors: errors });
     console.log(errors);
     if (Object.keys(errors).length !== 0) return;
 
@@ -88,7 +88,7 @@ export default function App() {
 
     // Validate the distribution parameters before plotting.
     const errors = validateDistribution(newDistribution);
-    setDistribution({ ...newDistribution, paramErrors: errors });
+    setDistribution({ ...newDistribution, errors: errors });
     console.log(errors);
     if (Object.keys(errors).length !== 0) return;
 

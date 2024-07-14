@@ -52,8 +52,3 @@ export default function DiscreteChart({ data }: { data: Data }) {
 
   return <Bar data={chartData} options={options} />;
 }
-
-// Example usage of the DiscreteChart component
-// const categories = [0, 1, 2, 3, 4, 5]; // Discrete categories
-// const data = [0.1, 0.2, 0.4, 0.15, 0.1, 0.05]; // PMF values for each category
-// <DiscreteChart data={data} categories={categories} />;

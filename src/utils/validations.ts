@@ -1,14 +1,29 @@
 import { Distribution } from "../interfaces/interfaces";
 
-export function validateDistribution(dist: Distribution) {
+/**
+ * This fuction validates the distribution parameters and returns a dictionary of errors.
+ * @param dist The `Distribution` object to validate.
+ * @returns A dictionary of errors where the key is the option name and the value is the error message.
+ */
+export function validateDistribution(dist: Distribution): {
+  [parameter: string]: string;
+} {
   const errors: { [parameter: string]: string } = {};
 
+  // Check if distribution is selected.
   if (!dist.name || !dist.type) {
     errors["select"] = "Select a distribution!";
   }
-  // } else if (Object.values(dist.params).includes("")) {
-  //   return "Fill in all parameters!";
-  // }
+
+  // Check if any parameter is empty.
+  if (Object.values(dist.params).includes("")) {
+    for (const [key, value] of Object.entries(dist.params)) {
+      if (value === "") {
+        errors[key] = "Parameter must have a value!";
+      }
+    }
+    return errors;
+  }
 
   switch (dist.type) {
     case "continuous": {
@@ -29,6 +44,11 @@ export function validateDistribution(dist: Distribution) {
   }
 }
 
+/**
+ * This function returns a dictionary of default slider properties for each parameter of the distribution.
+ * @param dist The `Distribution` object to get sliders for.
+ * @returns A dictionary of slider properties where the key is the parameter name and the value is the slider properties.
+ */
 export function getSliders(dist: Distribution) {
   switch (dist.type) {
     case "continuous": {

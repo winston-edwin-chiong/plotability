@@ -26,7 +26,7 @@ export default function ParameterSettings({
               value={distribution.params[parameter] as number}
               label={parameter}
               onChange={(value) => inputOnChange(value, parameter)}
-              error={distribution.paramErrors?.[parameter]}
+              error={distribution.errors?.[parameter]}
             />
             <ParameterSlider
               distribution={distribution}
@@ -82,16 +82,19 @@ function ParameterSlider({
           value={sliderSettings.min}
           label="Min"
           onChange={(value) => handleSliderSettingChange(value, "min")}
+          hideControls
         />
         <NumberInput
           value={sliderSettings.max}
           label="Max"
           onChange={(value) => handleSliderSettingChange(value, "max")}
+          hideControls
         />
         <NumberInput
           value={sliderSettings.step}
           label="Step"
           onChange={(value) => handleSliderSettingChange(value, "step")}
+          hideControls
         />
       </Group>
       <div>Slider Settings: {JSON.stringify(sliderSettings)}</div>

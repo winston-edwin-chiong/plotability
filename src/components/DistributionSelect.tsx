@@ -30,7 +30,7 @@ export default function DistributionSelect({
       allowDeselect={false}
       clearable={true}
       nothingFoundMessage="No distribution found!"
-      error={distribution.paramErrors["select"]}
+      error={distribution.errors["select"]}
     />
   );
 }
