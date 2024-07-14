@@ -10,11 +10,13 @@ export default function ParameterSettings({
   inputOnChange,
   sliderOnChange,
   sliderOnChangeEnd,
+  index,
 }: {
   distribution: Distribution;
-  inputOnChange: (value: number | string, parameter: string) => void;
-  sliderOnChange: (value: number | string, parameter: string) => void;
-  sliderOnChangeEnd: (value: number | string, parameter: string) => void;
+  inputOnChange: (value: number | string, parameter: string, index: number) => void;
+  sliderOnChange: (value: number | string, parameter: string, index: number) => void;
+  sliderOnChangeEnd: (value: number | string, parameter: string, index: number) => void;
+  index: number;
 }) {
   return (
     <>
@@ -25,7 +27,7 @@ export default function ParameterSettings({
             <NumberInput
               value={distribution.params[parameter] as number}
               label={parameter}
-              onChange={(value) => inputOnChange(value, parameter)}
+              onChange={(value) => inputOnChange(value, parameter, index)}
               error={distribution.errors?.[parameter]}
             />
             <ParameterSlider
@@ -33,6 +35,7 @@ export default function ParameterSettings({
               parameter={parameter}
               sliderOnChange={sliderOnChange}
               sliderOnChangeEnd={sliderOnChangeEnd}
+              index={index}
             />
           </Stack>
         ))}
@@ -45,11 +48,13 @@ function ParameterSlider({
   parameter,
   sliderOnChange,
   sliderOnChangeEnd,
+  index,
 }: {
   distribution: Distribution;
   parameter: string;
-  sliderOnChange: (value: number | string, parameter: string) => void;
-  sliderOnChangeEnd: (value: number | string, parameter: string) => void;
+  sliderOnChange: (value: number | string, parameter: string, index: number) => void;
+  sliderOnChangeEnd: (value: number | string, parameter: string, index: number) => void;
+  index: number;
 }) {
   const sliders = getSliders(distribution);
 
@@ -74,8 +79,8 @@ function ParameterSlider({
         min={sliderSettings.min}
         max={sliderSettings.max}
         step={sliderSettings.step}
-        onChange={(value) => sliderOnChange(value, parameter)}
-        onChangeEnd={(value) => sliderOnChangeEnd(value, parameter)}
+        onChange={(value) => sliderOnChange(value, parameter, index)}
+        onChangeEnd={(value) => sliderOnChangeEnd(value, parameter, index)}
       />
       <Group align="center" justify="center">
         <NumberInput

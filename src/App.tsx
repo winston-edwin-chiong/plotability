@@ -19,17 +19,19 @@ import { validateDistribution } from "./utils/validations";
 export default function App() {
   const [distCategory, setdistCategory] = useInputState<string>("all");
   const [distFunction, setDistFunction] = useInputState<string>("pdf_pmf");
-  const [distribution, setDistribution] = useState<Distribution>({
-    name: "",
-    type: "",
-    params: {},
-    errors: {},
-  });
-  const [data, setData] = useState<Data>({ x: [], y: [] });
+  const [distributions, setDistributions] = useState<Distribution[]>([
+    {
+      name: "",
+      type: "",
+      params: {},
+      errors: {},
+    },
+  ]);
+  const [data, setData] = useState<Data[]>([{ x: [], y: [] }]);
   const [chartType, setChartType] = useState<string>("");
 
-  const handleDistributionChange = (value: string | null) => {
-    if (!value || value === distribution.name) return;
+  const handleDistributionChange = (value: string | null, index: number) => {
+    if (!value || value === distributions[index].name) return;
 
     // Find the distribution parameters from the data.
     const type = DistributionsData.distributions.find(
@@ -42,60 +44,112 @@ export default function App() {
     };
 
     // Copy over parameter values up to the number of the new distribution's parameters.
-    const oldKeys = Object.keys(distribution.params);
+    const oldKeys = Object.keys(distributions[index].params);
     const newKeys = Object.keys(newParamsValues);
     for (let i = 0; i < newKeys.length; i++) {
       if (i < oldKeys.length) {
-        newParamsValues[newKeys[i]] = distribution.params[oldKeys[i]];
+        newParamsValues[newKeys[i]] = distributions[index].params[oldKeys[i]];
       } else {
         newParamsValues[newKeys[i]] = "";
       }
     }
 
-    setDistribution({
+    const newDistributions = [...distributions];
+    newDistributions[index] = {
       name: value,
       type: type as "" | "continuous" | "discrete",
       params: newParamsValues,
       errors: {},
-    });
+    };
+    setDistributions(newDistributions);
   };
 
   const handlePlotButtonClick = () => {
+    console.log("Plot button clicked!");
     // Validate the distribution parameters before plotting.
-    const errors = validateDistribution(distribution);
-    setDistribution({ ...distribution, errors: errors });
-    console.log(errors);
-    if (Object.keys(errors).length !== 0) return;
+    const newDistributions = [...distributions];
+    for (let i = 0; i < distributions.length; i++) {
+      const errors = validateDistribution(distributions[i]);
+      newDistributions[i] = { ...distributions[i], errors: errors };
+      console.log(errors);
+    }
+    setDistributions(newDistributions);
+    for (let i = 0; i < distributions.length; i++) {
+      // Don't calculate & plot if there are errors.
+      if (!(Object.keys(distributions[i].errors).length === 0)) return;
+    }
 
+    console.log("Calculating and plotting...");
     // Calculate the new data and update the chart.
-    const data = getDistributionData(distribution, distFunction);
-    setData(data);
-    setChartType(distribution.type);
+    const newData = [...data];
+    for (let i = 0; i < newDistributions.length; i++) {
+      const chartData = getDistributionData(newDistributions[i], distFunction);
+      newData[i] = chartData;
+    }
+    setData(newData);
   };
 
-  const handleParamChange = (value: number | string, parameter: string) => {
-    const newParamsValues = { ...distribution.params };
+  const handleParamChange = (
+    value: number | string,
+    parameter: string,
+    index: number
+  ) => {
+    const newParamsValues = { ...distributions[index].params };
     newParamsValues[parameter] = value;
-    setDistribution({ ...distribution, params: newParamsValues });
+    const newDistributions = [...distributions];
+    newDistributions[index] = {
+      ...distributions[index],
+      params: newParamsValues,
+    };
+    setDistributions(newDistributions);
   };
 
-  const handleSliderChangeEnd = (value: number | string, parameter: string) => {
+  const handleSliderChangeEnd = (
+    value: number | string,
+    parameter: string,
+    index: number
+  ) => {
+    console.log("Slider change end!");
     // The sliders also update the chart. This function is called when the user stops dragging the slider.
-    const newParamsValues = { ...distribution.params };
+    const newParamsValues = { ...distributions[index].params };
     newParamsValues[parameter] = value;
-    const newDistribution = { ...distribution, params: newParamsValues };
-    setDistribution(newDistribution);
+    const newDistributions = [...distributions];
+    newDistributions[index] = {
+      ...distributions[index],
+      params: newParamsValues,
+    };
 
     // Validate the distribution parameters before plotting.
-    const errors = validateDistribution(newDistribution);
-    setDistribution({ ...newDistribution, errors: errors });
-    console.log(errors);
-    if (Object.keys(errors).length !== 0) return;
+    for (let i = 0; i < newDistributions.length; i++) {
+      const errors = validateDistribution(newDistributions[i]);
+      newDistributions[i] = { ...newDistributions[i], errors: errors };
+    }
+    setDistributions(newDistributions);
+    // Don't calculate & plot if there are errors.
+    for (let i = 0; i < distributions.length; i++) {
+      if (!(Object.keys(distributions[i].errors).length === 0)) return;
+    }
 
+    console.log("Calculating and plotting...");
     // Calculate the new data and update the chart.
-    const data = getDistributionData(newDistribution, distFunction);
-    setData(data);
-    setChartType(distribution.type);
+    const newData = [...data];
+    for (let i = 0; i < newDistributions.length; i++) {
+      const chartData = getDistributionData(newDistributions[i], distFunction);
+      newData[i] = chartData;
+    }
+    setData(newData);
+  };
+
+  const handleAddClick = () => {
+    setDistributions([
+      ...distributions,
+      {
+        name: "",
+        type: "",
+        params: {},
+        errors: {},
+      },
+    ]);
   };
 
   return (
@@ -111,11 +165,6 @@ export default function App() {
           <Radio value="discrete" label="Discrete" />
         </Group>
       </Radio.Group>
-      <DistributionSelect
-        distribution={distribution}
-        distCategory={distCategory}
-        distributionOnChange={handleDistributionChange}
-      />
       <Radio.Group
         value={distFunction}
         onChange={(value) => setDistFunction(value)}
@@ -125,22 +174,39 @@ export default function App() {
           <Radio value="cdf" label="CDF" />
         </Group>
       </Radio.Group>
-      <ParameterSettings
-        distribution={distribution}
-        inputOnChange={handleParamChange}
-        sliderOnChange={handleParamChange}
-        sliderOnChangeEnd={handleSliderChangeEnd}
-      />
+      {distributions.map((distribution, index) => (
+        <div key={index}>
+          <DistributionSelect
+            distribution={distribution}
+            distCategory={distCategory}
+            distributionOnChange={handleDistributionChange}
+            index={index}
+          />
+          <ParameterSettings
+            distribution={distribution}
+            inputOnChange={handleParamChange}
+            sliderOnChange={handleParamChange}
+            sliderOnChangeEnd={handleSliderChangeEnd}
+            index={index}
+          />
+        </div>
+      ))}
       <Button variant="default" onClick={() => handlePlotButtonClick()}>
         PLOT!
       </Button>
-      {distribution.name && <Button variant="default">+ ADD ANOTHER!</Button>}
+      {distributions.length < 3 && (
+        <Button variant="default" onClick={handleAddClick}>
+          + ADD ANOTHER!
+        </Button>
+      )}
 
       {/* Render state in the DOM for debugging */}
       <div style={{ marginTop: "20px" }}>
         <h3>Debug Information:</h3>
         <p>
-          <strong>Distribution Object:</strong> {JSON.stringify(distribution)}
+          <strong>Distribution Object:</strong>{" "}
+          {JSON.stringify(distributions, null, 2)}
+          <strong>Distribution Object Length:</strong> {distributions.length}
         </p>
         <p>
           <strong>Calculation Type: </strong>
@@ -149,8 +215,9 @@ export default function App() {
       </div>
 
       <div style={{ marginTop: "20px" }}>
-        {chartType === "continuous" && <ContinuousChart data={data} />}
-        {chartType === "discrete" && <DiscreteChart data={data} />}
+        <ContinuousChart data={data} />
+        {/* {chartType === "continuous" && <ContinuousChart data={data} />}
+        {chartType === "discrete" && <DiscreteChart data={data} />} */}
       </div>
     </MantineProvider>
   );

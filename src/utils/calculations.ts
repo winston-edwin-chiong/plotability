@@ -371,8 +371,8 @@ function calculateContinuousDistData(
     i <= xBounds[1] + 1;
     i += (xBounds[1] - 1 - xBounds[0] + 1) / numPoints
   ) {
-    y.push(Number(distFunc(i, ...Object.values(params)).toFixed(8)));
-    x.push(Number(i.toFixed(1)));
+    y.push(Number(distFunc(i, ...Object.values(params)).toFixed(4)));
+    x.push(Number(i.toFixed(4)));
   }
   return { x: x, y: y };
 }
@@ -396,7 +396,7 @@ function calculateDiscreteDistData(
   const y: number[] = [];
   const x: number[] = [];
   xBounds.forEach((i) => {
-    y.push(distFunc(i, ...Object.values(params)));
+    y.push(Number(distFunc(i, ...Object.values(params)).toFixed(4)));
     x.push(i);
   });
   return { x: x, y: y };

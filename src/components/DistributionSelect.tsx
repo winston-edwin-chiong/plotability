@@ -7,10 +7,12 @@ export default function DistributionSelect({
   distribution,
   distCategory,
   distributionOnChange,
+  index,
 }: {
   distribution: Distribution;
   distCategory: string;
-  distributionOnChange: (value: string | null) => void;
+  distributionOnChange: (value: string | null, index: number) => void;
+  index: number;
 }) {
   return (
     <Select
@@ -25,7 +27,7 @@ export default function DistributionSelect({
               .sort((a, b) => a.label.localeCompare(b.label))
       }
       value={distribution.name || ""}
-      onChange={(value) => distributionOnChange(value)}
+      onChange={(value) => distributionOnChange(value, index)}
       searchable={true}
       allowDeselect={false}
       clearable={true}
