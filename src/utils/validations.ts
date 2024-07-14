@@ -1,24 +1,31 @@
 import { Distribution } from "../interfaces/interfaces";
 
 export function validateDistribution(dist: Distribution) {
-  if (testNull(dist)) {
-    return testNull(dist);
+  const errors: { [parameter: string]: string } = {};
+
+  if (!dist.name || !dist.type) {
+    errors["select"] = "Select a distribution!";
   }
+  // } else if (Object.values(dist.params).includes("")) {
+  //   return "Fill in all parameters!";
+  // }
 
   switch (dist.type) {
     case "continuous": {
       return validateContinuousDists[dist.name]?.validate(
-        dist.params as { [parameter: string]: number }
+        dist.params as { [parameter: string]: number },
+        errors
       );
     }
     case "discrete": {
       return validateDiscreteDists[dist.name]?.validate(
-        dist.params as { [parameter: string]: number }
+        dist.params as { [parameter: string]: number },
+        errors
       );
     }
 
     default:
-      return "";
+      return errors;
   }
 }
 
@@ -40,29 +47,31 @@ export function getSliders(dist: Distribution) {
   }
 }
 
-function testNull(dist: Distribution) {
-  if (!dist.name || !dist.type) {
-    return "Select a distribution!";
-  } else if (Object.values(dist.params).includes("")) {
-    return "Fill in all parameters!";
-  }
-  return "";
-}
-
+/**
+ * An object containing functions to validate continuous distributions.
+ * The `validate` function takes a dictionary of parameters and dictionary of errors and updates the error dictionary.
+ * The `sliders` function takes a dictionary of parameters returns a dictionary of default slider properties for each parameter.
+ */
 const validateContinuousDists: {
   [distribution: string]: {
-    validate: (params: { [parameter: string]: number }) => string;
+    validate: (
+      params: { [parameter: string]: number },
+      errors: { [parameter: string]: string }
+    ) => {
+      [parameter: string]: string;
+    };
     sliders: (params: { [parameter: string]: number }) => {
       [parameter: string]: { min: number; max: number; step: number };
     };
   };
 } = {
   arcsine: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["a"] >= params["b"]) {
-        return "Parameter a must be less than b!";
+        errors["a"] = "Parameter a must be less than b!";
+        errors["b"] = "Parameter a must be less than b!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -72,14 +81,14 @@ const validateContinuousDists: {
     },
   },
   beta: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["alpha"] <= 0) {
-        return "Alpha must be greater than 0!";
+        errors["alpha"] = "Alpha must be greater than 0!";
       }
       if (params["beta"] <= 0) {
-        return "Beta must be greater than 0!";
+        errors["beta"] = "Beta must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -89,14 +98,14 @@ const validateContinuousDists: {
     },
   },
   betaprime: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["alpha"] <= 0) {
-        return "Alpha must be greater than 0!";
+        errors["alpha"] = "Alpha must be greater than 0!";
       }
       if (params["beta"] <= 0) {
-        return "Beta must be greater than 0!";
+        errors["beta"] = "Beta must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -106,11 +115,11 @@ const validateContinuousDists: {
     },
   },
   cauchy: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["gamma"] < 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["gamma"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -120,11 +129,11 @@ const validateContinuousDists: {
     },
   },
   chi: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["k"] <= 0) {
-        return "Degrees of freedom must be greater than 0!";
+        errors["k"] = "Degrees of freedom must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -133,11 +142,11 @@ const validateContinuousDists: {
     },
   },
   chisquare: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["k"] <= 0) {
-        return "Degrees of freedom must be greater than 0!";
+        errors["k"] = "Degrees of freedom must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -146,11 +155,11 @@ const validateContinuousDists: {
     },
   },
   cosine: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["s"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["s"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -160,14 +169,14 @@ const validateContinuousDists: {
     },
   },
   erlang: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["k"] <= 0 || !Number.isInteger(params["k"])) {
-        return "Shape parameter must be a integer greater than zero!";
+        errors["k"] = "Shape parameter must be a integer greater than zero!";
       }
       if (params["lambda"] <= 0) {
-        return "Rate parameter must be greater than 0!";
+        errors["lambda"] = "Rate parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -177,11 +186,11 @@ const validateContinuousDists: {
     },
   },
   exponential: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["lambda"] <= 0) {
-        return "Rate parameter must be greater than 0!";
+        errors["lambda"] = "Rate parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -190,14 +199,14 @@ const validateContinuousDists: {
     },
   },
   f: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["d1"] <= 0) {
-        return "Degrees of freedom must be greater than 0!";
+        errors["d1"] = "Degrees of freedom must be greater than 0!";
       }
       if (params["d2"] <= 0) {
-        return "Degrees of freedom must be greater than 0!";
+        errors["d2"] = "Degrees of freedom must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -207,14 +216,14 @@ const validateContinuousDists: {
     },
   },
   frechet: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["alpha"] <= 0) {
-        return "Shape parameter must be greater than 0!";
+        errors["alpha"] = "Shape parameter must be greater than 0!";
       }
       if (params["s"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["s"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -225,14 +234,14 @@ const validateContinuousDists: {
     },
   },
   gamma: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["alpha"] <= 0) {
-        return "Alpha must be greater than 0!";
+        errors["alpha"] = "Alpha must be greater than 0!";
       }
       if (params["beta"] <= 0) {
-        return "Beta must be greater than 0!";
+        errors["beta"] = "Beta must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -242,11 +251,11 @@ const validateContinuousDists: {
     },
   },
   gumbel: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["beta"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["beta"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -256,14 +265,14 @@ const validateContinuousDists: {
     },
   },
   invgamma: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["alpha"] <= 0) {
-        return "Alpha must be greater than 0!";
+        errors["alpha"] = "Alpha must be greater than 0!";
       }
       if (params["beta"] <= 0) {
-        return "Beta must be greater than 0!";
+        errors["beta"] = "Beta must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -273,14 +282,14 @@ const validateContinuousDists: {
     },
   },
   kumaraswamy: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["a"] <= 0) {
-        return "Shape parameter a must be greater than 0!";
+        errors["a"] = "Shape parameter a must be greater than 0!";
       }
       if (params["b"] <= 0) {
-        return "Shape parameter b must be greater than 0!";
+        errors["b"] = "Shape parameter b must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -290,11 +299,11 @@ const validateContinuousDists: {
     },
   },
   laplace: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["b"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["b"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -304,11 +313,11 @@ const validateContinuousDists: {
     },
   },
   levy: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["c"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["c"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -318,11 +327,11 @@ const validateContinuousDists: {
     },
   },
   logistic: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["s"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["s"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -332,11 +341,11 @@ const validateContinuousDists: {
     },
   },
   lognormal: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["sigma"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["sigma"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -346,11 +355,11 @@ const validateContinuousDists: {
     },
   },
   normal: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["sigma"] <= 0) {
-        return "Standard deviation must be greater than 0!";
+        errors["sigma"] = "Standard deviation must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -360,14 +369,14 @@ const validateContinuousDists: {
     },
   },
   pareto1: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["alpha"] <= 0) {
-        return "Shape parameter must be greater than 0!";
+        errors["alpha"] = "Shape parameter must be greater than 0!";
       }
       if (params["beta"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["beta"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -377,11 +386,11 @@ const validateContinuousDists: {
     },
   },
   rayleigh: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["sigma"] <= 0) {
-        return "Scale parameter must be greater than 0!";
+        errors["sigma"] = "Scale parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -390,11 +399,11 @@ const validateContinuousDists: {
     },
   },
   t: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["v"] <= 0) {
-        return "Degrees of freedom must be greater than 0!";
+        errors["v"] = "Degrees of freedom must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -403,11 +412,17 @@ const validateContinuousDists: {
     },
   },
   triangular: {
-    validate: (params) => {
-      if (params["c"] < params["a"] || params["c"] > params["b"] || params["a"] > params["b"]) {
-        return "Parameters must satisfy a <= c <= b!";
+    validate: (params, errors) => {
+      if (
+        params["c"] < params["a"] ||
+        params["c"] > params["b"] ||
+        params["a"] > params["b"]
+      ) {
+        errors["a"] = "Parameters must satisfy a <= c <= b!";
+        errors["b"] = "Parameters must satisfy a <= c <= b!";
+        errors["c"] = "Parameters must satisfy a <= c <= b!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -418,11 +433,12 @@ const validateContinuousDists: {
     },
   },
   uniform: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["a"] >= params["b"]) {
-        return "Parameter a must be less than b!";
+        errors["a"] = "Parameter a must be less than b!";
+        errors["b"] = "Parameter a must be less than b!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -433,20 +449,30 @@ const validateContinuousDists: {
   },
 };
 
+/**
+ * An object containing functions to validate discrete distributions.
+ * The `validate` function takes a dictionary of parameters and dictionary of errors and updates the error dictionary.
+ * The `sliders` function takes a dictionary of parameters returns a dictionary of default slider properties for each parameter.
+ */
 const validateDiscreteDists: {
   [distribution: string]: {
-    validate: (params: { [parameter: string]: number }) => string;
+    validate: (
+      params: { [parameter: string]: number },
+      errors: { [parameter: string]: string }
+    ) => {
+      [parameter: string]: string;
+    };
     sliders: (params: { [parameter: string]: number }) => {
       [parameter: string]: { min: number; max: number; step: number };
     };
   };
 } = {
   bernoulli: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["p"] < 0 || params["p"] > 1) {
-        return "Probability must be between 0 and 1!";
+        errors["p"] = "Probability must be between 0 and 1!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -455,14 +481,14 @@ const validateDiscreteDists: {
     },
   },
   binomial: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["n"] < 0 || !Number.isInteger(params["n"])) {
-        return "Number of trials must be a non-negative integer!";
+        errors["n"] = "Number of trials must be a non-negative integer!";
       }
       if (params["p"] < 0 || params["p"] > 1) {
-        return "Probability must be between 0 and 1!";
+        errors["p"] = "Probability must be between 0 and 1!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -472,11 +498,12 @@ const validateDiscreteDists: {
     },
   },
   discrete_uniform: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["a"] >= params["b"]) {
-        return "Parameter a must be less than b!";
+        errors["a"] = "Parameter a must be less than b!";
+        errors["b"] = "Parameter a must be less than b!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -486,11 +513,11 @@ const validateDiscreteDists: {
     },
   },
   geometric: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["p"] < 0 || params["p"] > 1) {
-        return "Probability must be between 0 and 1!";
+        errors["p"] = "Probability must be between 0 and 1!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -499,23 +526,27 @@ const validateDiscreteDists: {
     },
   },
   hypergeometric: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["N"] < 0 || !Number.isInteger(params["N"])) {
-        return "Population size must be a non-negative integer!";
+        errors["N"] = "Population size must be a non-negative integer!";
       }
-      if (params["K"] < 0 || !Number.isInteger(params["K"])) {
-        return "Number of successes must be a non-negative integer!";
+      if (
+        params["K"] < 0 ||
+        !Number.isInteger(params["K"]) ||
+        params["K"] > params["N"]
+      ) {
+        errors["K"] =
+          "Number of successes must be a non-negative integer and less than the population size!";
       }
-      if (params["n"] < 0 || !Number.isInteger(params["n"])) {
-        return "Number of draws must be a non-negative integer!";
+      if (
+        params["n"] < 0 ||
+        !Number.isInteger(params["n"]) ||
+        params["n"] > params["N"]
+      ) {
+        errors["n"] =
+          "Number of draws must be a non-negative integer and less than the population size!!";
       }
-      if (params["K"] > params["N"]) {
-        return "Number of successes must be less than the population size!";
-      }
-      if (params["n"] > params["N"]) {
-        return "Number of draws must be less than the population size!";
-      }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -526,14 +557,15 @@ const validateDiscreteDists: {
     },
   },
   negative_binomial: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["r"] <= 0 || !Number.isInteger(params["r"])) {
-        return "Number of successes must be a positive integer!";
+        errors["r"] = "Number of successes must be a positive integer!";
       }
       if (params["p"] <= 0 || params["p"] > 1) {
-        return "Probability must be greater than 0 and less than or equal to 1!";
+        errors["p"] =
+          "Probability must be greater than 0 and less than or equal to 1!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {
@@ -543,11 +575,11 @@ const validateDiscreteDists: {
     },
   },
   poisson: {
-    validate: (params) => {
+    validate: (params, errors) => {
       if (params["lambda"] <= 0) {
-        return "Rate parameter must be greater than 0!";
+        errors["lambda"] = "Rate parameter must be greater than 0!";
       }
-      return "";
+      return errors;
     },
     sliders: () => {
       return {

@@ -4,188 +4,284 @@
       "label": "Arcsine",
       "value": "arcsine",
       "type": "continuous",
-      "params": ["a", "b"]
+      "params": [
+        "a",
+        "b"
+      ]
     },
     {
       "label": "Beta",
       "value": "beta",
       "type": "continuous",
-      "params": ["alpha", "beta"]
+      "params": [
+        "alpha",
+        "beta"
+      ]
     },
     {
       "label": "Beta Prime",
       "value": "betaprime",
       "type": "continuous",
-      "params": ["alpha", "beta"]
+      "params": [
+        "alpha",
+        "beta"
+      ]
     },
     {
       "label": "Cauchy",
       "value": "cauchy",
       "type": "continuous",
-      "params": ["x0", "gamma"]
+      "params": [
+        "x0",
+        "gamma"
+      ]
     },
-    { "label": "Chi", "value": "chi", "type": "continuous", "params": ["k"] },
+    {
+      "label": "Chi",
+      "value": "chi",
+      "type": "continuous",
+      "params": [
+        "k"
+      ]
+    },
     {
       "label": "Chi-Squared",
       "value": "chisquare",
       "type": "continuous",
-      "params": ["k"]
+      "params": [
+        "k"
+      ]
     },
     {
       "label": "Cosine",
       "value": "cosine",
       "type": "continuous",
-      "params": ["mu", "s"]
+      "params": [
+        "mu",
+        "s"
+      ]
     },
     {
       "label": "Erlang",
       "value": "erlang",
       "type": "continuous",
-      "params": ["k", "lambda"]
+      "params": [
+        "k",
+        "lambda"
+      ]
     },
     {
       "label": "Exponential",
       "value": "exponential",
       "type": "continuous",
-      "params": ["lambda"]
+      "params": [
+        "lambda"
+      ]
     },
     {
       "label": "Fisher's F",
       "value": "f",
       "type": "continuous",
-      "params": ["k", "lambda"]
+      "params": [
+        "k",
+        "lambda"
+      ]
     },
     {
       "label": "Fréchet",
       "value": "frechet",
       "type": "continuous",
-      "params": ["alpha", "s", "m"]
+      "params": [
+        "alpha",
+        "s",
+        "m"
+      ]
     },
     {
       "label": "Gamma",
       "value": "gamma",
       "type": "continuous",
-      "params": ["alpha", "beta"]
+      "params": [
+        "alpha",
+        "beta"
+      ]
     },
     {
       "label": "Gumbel",
       "value": "gumbel",
       "type": "continuous",
-      "params": ["mu", "beta"]
+      "params": [
+        "mu",
+        "beta"
+      ]
     },
     {
       "label": "Inverse Gamma",
       "value": "invgamma",
       "type": "continuous",
-      "params": ["alpha", "beta"]
+      "params": [
+        "alpha",
+        "beta"
+      ]
     },
     {
       "label": "Kumaraswamy",
       "value": "kumaraswamy",
       "type": "continuous",
-      "params": ["a", "b"]
+      "params": [
+        "a",
+        "b"
+      ]
     },
     {
       "label": "Laplace",
       "value": "laplace",
       "type": "continuous",
-      "params": ["mu", "b"]
+      "params": [
+        "mu",
+        "b"
+      ]
     },
     {
       "label": "Lévy",
       "value": "levy",
       "type": "continuous",
-      "params": ["mu", "c"]
+      "params": [
+        "mu",
+        "c"
+      ]
     },
     {
       "label": "Logistic",
       "value": "logistic",
       "type": "continuous",
-      "params": ["mu", "s"]
+      "params": [
+        "mu",
+        "s"
+      ]
     },
     {
       "label": "Lognormal",
       "value": "lognormal",
       "type": "continuous",
-      "params": ["mu", "sigma"]
+      "params": [
+        "mu",
+        "sigma"
+      ]
     },
     {
       "label": "Normal",
       "value": "normal",
       "type": "continuous",
-      "params": ["mu", "sigma"]
+      "params": [
+        "mu",
+        "sigma"
+      ]
     },
     {
       "label": "Pareto",
       "value": "pareto1",
       "type": "continuous",
-      "params": ["alpha", "beta"]
+      "params": [
+        "alpha",
+        "beta"
+      ]
     },
     {
       "label": "Rayleigh",
       "value": "rayleigh",
       "type": "continuous",
-      "params": ["sigma"]
+      "params": [
+        "sigma"
+      ]
     },
     {
       "label": "Student's T",
       "value": "t",
       "type": "continuous",
-      "params": ["v"]
+      "params": [
+        "v"
+      ]
     },
     {
       "label": "Triangular",
       "value": "triangular",
       "type": "continuous",
-      "params": ["a", "b", "c"]
+      "params": [
+        "a",
+        "b",
+        "c"
+      ]
     },
     {
       "label": "Uniform",
       "value": "uniform",
       "type": "continuous",
-      "params": ["a", "b"]
+      "params": [
+        "a",
+        "b"
+      ]
     },
     {
       "label": "Bernoulli",
       "value": "bernoulli",
       "type": "discrete",
-      "params": ["p"]
+      "params": [
+        "p"
+      ]
     },
     {
       "label": "Binomial",
       "value": "binomial",
       "type": "discrete",
-      "params": ["n", "p"]
+      "params": [
+        "n",
+        "p"
+      ]
     },
     {
       "label": "Discrete Uniform",
       "value": "discrete_uniform",
       "type": "discrete",
-      "params": ["a", "b"]
+      "params": [
+        "a",
+        "b"
+      ]
     },
     {
       "label": "Geometric",
       "value": "geometric",
       "type": "discrete",
-      "params": ["p"]
+      "params": [
+        "p"
+      ]
     },
     {
       "label": "Hypergeometric",
       "value": "hypergeometric",
       "type": "discrete",
-      "params": ["N", "K", "n"]
+      "params": [
+        "N",
+        "K",
+        "n"
+      ]
     },
     {
       "label": "Negative Binomial",
       "value": "negative_binomial",
       "type": "discrete",
-      "params": ["r", "p"]
+      "params": [
+        "r",
+        "p"
+      ]
     },
     {
       "label": "Poisson",
       "value": "poisson",
       "type": "discrete",
-      "params": ["lambda"]
+      "params": [
+        "lambda"
+      ]
     }
   ]
 }

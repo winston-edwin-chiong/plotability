@@ -1,8 +1,21 @@
-import { CategoryScale, LinearScale, PointElement, LineElement, BarElement, Chart } from "chart.js";
+import {
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Chart,
+} from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { Data } from "../interfaces/interfaces";
 
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement);
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement
+);
 
 export default function DiscreteChart({ data }: { data: Data }) {
   const chartData = {
@@ -24,14 +37,14 @@ export default function DiscreteChart({ data }: { data: Data }) {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Categories',
+          text: "Categories",
         },
       },
       y: {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Probability',
+          text: "Probability",
         },
       },
     },

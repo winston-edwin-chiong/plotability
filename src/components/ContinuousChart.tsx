@@ -1,4 +1,11 @@
-import { CategoryScale, LinearScale, PointElement, LineElement, Filler, Chart } from "chart.js";
+import {
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Chart,
+} from "chart.js";
 import { Line } from "react-chartjs-2";
 import { Data } from "../interfaces/interfaces";
 

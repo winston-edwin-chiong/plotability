@@ -1,5 +1,5 @@
 import "@mantine/core/styles.css";
-import distributions_data from "../distributions_data.json";
+import DistributionsData from "../distributions_data.json";
 import { Slider, NumberInput, Group, Stack } from "@mantine/core";
 import { Distribution } from "../interfaces/interfaces";
 import { getSliders } from "../utils/validations";
@@ -9,7 +9,7 @@ export default function ParameterSettings({
   distribution,
   inputOnChange,
   sliderOnChange,
-  sliderOnChangeEnd
+  sliderOnChangeEnd,
 }: {
   distribution: Distribution;
   inputOnChange: (value: number | string, parameter: string) => void;
@@ -18,7 +18,7 @@ export default function ParameterSettings({
 }) {
   return (
     <>
-      {distributions_data.distributions
+      {DistributionsData.distributions
         .find((dist) => dist.value === distribution.name)
         ?.params.map((parameter) => (
           <Stack key={parameter}>
@@ -26,6 +26,7 @@ export default function ParameterSettings({
               value={distribution.params[parameter] as number}
               label={parameter}
               onChange={(value) => inputOnChange(value, parameter)}
+              error={distribution.paramErrors?.[parameter]}
             />
             <ParameterSlider
               distribution={distribution}
@@ -43,7 +44,7 @@ function ParameterSlider({
   distribution,
   parameter,
   sliderOnChange,
-  sliderOnChangeEnd
+  sliderOnChangeEnd,
 }: {
   distribution: Distribution;
   parameter: string;

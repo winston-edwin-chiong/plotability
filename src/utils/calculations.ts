@@ -5,7 +5,6 @@ import { Data, Distribution } from "../interfaces/interfaces";
  * An object containing the continuous distributions and their associated functions, 
  * and a function that calculates x-value bounds from a distribution's parameters.
  */
-
 const continuousDists: {
   [distribution: string]: {
     pdf: (x: number, ...params: number[]) => number;
