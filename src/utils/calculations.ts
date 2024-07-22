@@ -1,5 +1,5 @@
 import * as stdlib_dists from "@stdlib/stats-base-dists";
-import { Data, Distribution } from "../interfaces/interfaces";
+import { Point, Distribution } from "../interfaces/interfaces";
 
 /**
  * An object containing the continuous distributions and their associated functions, 
@@ -356,25 +356,25 @@ const discreteDists: {
  * 
  * @param xBounds The bounds of the x-axis, as an array.
  * 
- * @returns A `Data` object containing the x- and y-values of the distribution.
+ * @returns An array of `Point` objects containing the x- and y-values of the distribution.
  */
 function calculateContinuousDistData(
   distFunc: (x: number, ...params: number[]) => number,
   params: { [parameter: string]: number },
   xBounds: number[]
-): Data {
-  const y: number[] = [];
-  const x: number[] = [];
+): Point[] {
+  const points: Point[] = [];
   const numPoints = 1000;
   for (
     let i = xBounds[0] - 1;
     i <= xBounds[1] + 1;
     i += (xBounds[1] - 1 - xBounds[0] + 1) / numPoints
   ) {
-    y.push(Number(distFunc(i, ...Object.values(params)).toFixed(4)));
-    x.push(Number(i.toFixed(4)));
+    const y = Number(distFunc(i, ...Object.values(params)).toFixed(4));
+    const x = Number(i.toFixed(4));
+    points.push({ x: x, y: y });
   }
-  return { x: x, y: y };
+  return points;
 }
 
 /**
@@ -386,20 +386,20 @@ function calculateContinuousDistData(
  * 
  * @param xBounds The discrete x-values to evaluate the distribution at.
  * 
- * @returns A `Data` object containing the x- and y-values of the distribution.
+ * @returns An array of `Point` objects containing the x- and y-values of the distribution.
  */
 function calculateDiscreteDistData(
   distFunc: (x: number, ...params: number[]) => number,
   params: { [parameter: string]: number },
   xBounds: number[]
-): Data {
-  const y: number[] = [];
-  const x: number[] = [];
+): Point[] {
+  const points: Point[] = [];
   xBounds.forEach((i) => {
-    y.push(Number(distFunc(i, ...Object.values(params)).toFixed(4)));
-    x.push(i);
+    const y = Number(distFunc(i, ...Object.values(params)).toFixed(4));
+    const x = i;
+    points.push({ x: x, y: y });
   });
-  return { x: x, y: y };
+  return points;
 }
 
 /**
@@ -422,12 +422,12 @@ function createArrayFromAtoB(a: number, b: number): number[] {
  * 
  * @param distFunc The distribution function that will be used to calculate the data. 
  * 
- * @returns A `Data` object containing the x- and y-values of the distribution.
+ * @returns A array of `Point` objects containing the x- and y-values of the distribution.
  */
 export function getDistributionData(
   dist: Distribution,
   distFunc: string
-): Data {
+): Point[] {
   const name = dist.name;
   const type = dist.type;
   const params = dist.params as { [parameter: string]: number };
@@ -453,5 +453,5 @@ export function getDistributionData(
       );
     }
   }
-  return { x: [], y: [] };
+  return [];
 }

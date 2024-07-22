@@ -5,13 +5,12 @@ import { useInputState } from "@mantine/hooks";
 import { useState } from "react";
 import {
   Header,
-  ContinuousChart,
-  DiscreteChart,
   ParameterSettings,
   DistributionSelect,
+  Figure,
 } from "./components";
 import { getDistributionData } from "./utils/calculations";
-import { Data, Distribution } from "./interfaces/interfaces";
+import { Distribution, Data } from "./interfaces/interfaces";
 import { validateDistribution } from "./utils/validations";
 
 /* Note that '0' is a valid parameter value for some distributions. */
@@ -27,8 +26,9 @@ export default function App() {
       errors: {},
     },
   ]);
-  const [data, setData] = useState<Data[]>([{ x: [], y: [] }]);
-  const [chartType, setChartType] = useState<string>("");
+  const [data, setData] = useState<Data[]>([
+    { name: "", type: "", data: [] },
+  ]);
 
   const handleDistributionChange = (value: string | null, index: number) => {
     if (!value || value === distributions[index].name) return;
@@ -74,9 +74,9 @@ export default function App() {
       console.log(errors);
     }
     setDistributions(newDistributions);
-    for (let i = 0; i < distributions.length; i++) {
+    for (let i = 0; i < newDistributions.length; i++) {
       // Don't calculate & plot if there are errors.
-      if (!(Object.keys(distributions[i].errors).length === 0)) return;
+      if (!(Object.keys(newDistributions[i].errors).length === 0)) return;
     }
 
     console.log("Calculating and plotting...");
@@ -84,7 +84,9 @@ export default function App() {
     const newData = [...data];
     for (let i = 0; i < newDistributions.length; i++) {
       const chartData = getDistributionData(newDistributions[i], distFunction);
-      newData[i] = chartData;
+      newData[i].data = chartData;
+      newData[i].name = newDistributions[i].name;
+      newData[i].type = newDistributions[i].type;
     }
     setData(newData);
   };
@@ -135,7 +137,9 @@ export default function App() {
     const newData = [...data];
     for (let i = 0; i < newDistributions.length; i++) {
       const chartData = getDistributionData(newDistributions[i], distFunction);
-      newData[i] = chartData;
+      newData[i].data = chartData;
+      newData[i].name = newDistributions[i].name;
+      newData[i].type = newDistributions[i].type;
     }
     setData(newData);
   };
@@ -150,6 +154,19 @@ export default function App() {
         errors: {},
       },
     ]);
+    setData([
+      ...data,
+      { name: "", type: "", data: [] },
+    ]);
+  };
+
+  const handleRemoveClick = () => {
+    if (distributions.length > 1) {
+      setDistributions(distributions.slice(0, -1));
+    }
+    if (data.length > 1) {
+      setData(data.slice(0, -1));
+    }
   };
 
   return (
@@ -199,6 +216,11 @@ export default function App() {
           + ADD ANOTHER!
         </Button>
       )}
+      {distributions.length > 1 && (
+        <Button variant="default" onClick={handleRemoveClick}>
+          - REMOVE LAST!
+        </Button>
+      )}
 
       {/* Render state in the DOM for debugging */}
       <div style={{ marginTop: "20px" }}>
@@ -206,7 +228,12 @@ export default function App() {
         <p>
           <strong>Distribution Object:</strong>{" "}
           {JSON.stringify(distributions, null, 2)}
+        </p>
+        <p>
           <strong>Distribution Object Length:</strong> {distributions.length}
+        </p>
+        <p>
+        <strong>Data Object Length:</strong> {data.length}
         </p>
         <p>
           <strong>Calculation Type: </strong>
@@ -215,9 +242,7 @@ export default function App() {
       </div>
 
       <div style={{ marginTop: "20px" }}>
-        <ContinuousChart data={data} />
-        {/* {chartType === "continuous" && <ContinuousChart data={data} />}
-        {chartType === "discrete" && <DiscreteChart data={data} />} */}
+        <Figure data={data} />
       </div>
     </MantineProvider>
   );
