@@ -8,20 +8,35 @@ import {
   BarElement,
   Filler,
   Chart as ChartJS,
+  plugins,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Filler, 
+  plugins
+);
+
+const colors = [
+  "rgba(255, 99, 132, 0.6)",
+  "rgba(54, 162, 235, 0.6)",
+  "rgba(255, 206, 86, 0.6)",
+];
 
 const Figure = memo(({ data }: { data: Data[] }) => {
   console.log("rendering continuous chart");
   const chartData = {
-    datasets: data.map((dist) => ({
+    datasets: data.map((dist, i) => ({
       type: dist.type == "continuous" ? ("line" as const) : ("bar" as const),
       label: dist.name,
       data: dist.data,
       fill: true,
-      backgroundColor: "rgba(249, 115, 22, 0.6)",
+      backgroundColor: colors[i],
       tension: 0.1,
       pointRadius: 0,
     })),
@@ -43,22 +58,23 @@ const Figure = memo(({ data }: { data: Data[] }) => {
         beginAtZero: true,
       },
     },
-    plugins: {
-      legend: {
-        display: true,
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Probability Density Function",
-      },
-      tooltip: {
-        enabled: true,
-      },
+  };
+
+  const plugins = {
+    id: "chart-plugins",
+    legend: {
+      display: false,
+      position: "right"
+    },
+    title: {
+      display: true,
+      text: "Probability Density Function",
     },
   };
 
-  return <Chart data={chartData} options={options} type="line" />;
+  return (
+    <Chart data={chartData} options={options} plugins={[plugins]} type="line" />
+  );
 });
 
 export default Figure;
