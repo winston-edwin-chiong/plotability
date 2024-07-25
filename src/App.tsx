@@ -26,9 +26,7 @@ export default function App() {
       errors: {},
     },
   ]);
-  const [data, setData] = useState<Data[]>([
-    { name: "", type: "", data: [] },
-  ]);
+  const [data, setData] = useState<Data[]>([{ name: "", type: "", data: [] }]);
 
   const handleDistributionChange = (value: string | null, index: number) => {
     if (!value || value === distributions[index].name) return;
@@ -128,8 +126,8 @@ export default function App() {
     }
     setDistributions(newDistributions);
     // Don't calculate & plot if there are errors.
-    for (let i = 0; i < distributions.length; i++) {
-      if (!(Object.keys(distributions[i].errors).length === 0)) return;
+    for (let i = 0; i < newDistributions.length; i++) {
+      if (!(Object.keys(newDistributions[i].errors).length === 0)) return;
     }
 
     console.log("Calculating and plotting...");
@@ -154,19 +152,17 @@ export default function App() {
         errors: {},
       },
     ]);
-    setData([
-      ...data,
-      { name: "", type: "", data: [] },
-    ]);
+    setData([...data, { name: "", type: "", data: [] }]);
   };
 
-  const handleRemoveClick = () => {
-    if (distributions.length > 1) {
-      setDistributions(distributions.slice(0, -1));
-    }
-    if (data.length > 1) {
-      setData(data.slice(0, -1));
-    }
+  const handleRemoveClick = (index: number) => {
+    // Remove the distribution and its data from the state.
+    const newDistributions = [...distributions];
+    newDistributions.splice(index, 1);
+    setDistributions(newDistributions);
+    const newData = [...data];
+    newData.splice(index, 1);
+    setData(newData);
   };
 
   return (
@@ -206,6 +202,9 @@ export default function App() {
             sliderOnChangeEnd={handleSliderChangeEnd}
             index={index}
           />
+          {distributions.length > 1 && (
+            <Button variant="default" onClick={() => handleRemoveClick(index)}>- REMOVE DISTRIBUTION</Button>
+          )}
         </div>
       ))}
       <Button variant="default" onClick={() => handlePlotButtonClick()}>
@@ -214,11 +213,6 @@ export default function App() {
       {distributions.length < 3 && (
         <Button variant="default" onClick={handleAddClick}>
           + ADD ANOTHER!
-        </Button>
-      )}
-      {distributions.length > 1 && (
-        <Button variant="default" onClick={handleRemoveClick}>
-          - REMOVE LAST!
         </Button>
       )}
 
@@ -233,7 +227,7 @@ export default function App() {
           <strong>Distribution Object Length:</strong> {distributions.length}
         </p>
         <p>
-        <strong>Data Object Length:</strong> {data.length}
+          <strong>Data Object Length:</strong> {data.length}
         </p>
         <p>
           <strong>Calculation Type: </strong>

@@ -95,8 +95,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        a: { min: -10, max: 10, step: 1 },
-        b: { min: -10, max: 10, step: 1 },
+        a: { min: -10, max: 10, step: 0.1 },
+        b: { min: -10, max: 10, step: 0.1 },
       };
     },
   },
@@ -112,8 +112,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        alpha: { min: 1, max: 10, step: 1 },
-        beta: { min: 1, max: 10, step: 1 },
+        alpha: { min: 1, max: 10, step: 0.1 },
+        beta: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -129,8 +129,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        alpha: { min: 1, max: 10, step: 1 },
-        beta: { min: 1, max: 10, step: 1 },
+        alpha: { min: 1, max: 10, step: 0.1 },
+        beta: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -143,8 +143,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        x0: { min: -10, max: 10, step: 1 },
-        gamma: { min: 1, max: 10, step: 1 },
+        x0: { min: -10, max: 10, step: 0.1 },
+        gamma: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -157,7 +157,7 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        k: { min: 1, max: 10, step: 1 },
+        k: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -170,7 +170,7 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        k: { min: 1, max: 10, step: 1 },
+        k: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -183,8 +183,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        mu: { min: -10, max: 10, step: 1 },
-        s: { min: 1, max: 10, step: 1 },
+        mu: { min: -10, max: 10, step: 0.1 },
+        s: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -200,8 +200,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        k: { min: 1, max: 10, step: 1 },
-        lambda: { min: 1, max: 10, step: 1 },
+        k: { min: 1, max: 10, step: 0.1 },
+        lambda: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -214,7 +214,7 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        lambda: { min: 1, max: 10, step: 1 },
+        lambda: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -230,8 +230,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        d1: { min: 1, max: 10, step: 1 },
-        d2: { min: 1, max: 10, step: 1 },
+        d1: { min: 1, max: 10, step: 0.1 },
+        d2: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -247,9 +247,9 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        alpha: { min: 1, max: 10, step: 1 },
-        s: { min: 1, max: 10, step: 1 },
-        m: { min: -10, max: 10, step: 1 },
+        alpha: { min: 1, max: 10, step: 0.1 },
+        s: { min: 1, max: 10, step: 0.1 },
+        m: { min: -10, max: 10, step: 0.1 },
       };
     },
   },
@@ -265,8 +265,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        alpha: { min: 1, max: 10, step: 1 },
-        beta: { min: 1, max: 10, step: 1 },
+        alpha: { min: 1, max: 10, step: 0.1 },
+        beta: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -279,8 +279,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        mu: { min: -10, max: 10, step: 1 },
-        beta: { min: 1, max: 10, step: 1 },
+        mu: { min: -10, max: 10, step: 0.1 },
+        beta: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -296,8 +296,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        alpha: { min: 1, max: 10, step: 1 },
-        beta: { min: 1, max: 10, step: 1 },
+        alpha: { min: 1, max: 10, step: 0.1 },
+        beta: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -313,8 +313,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        a: { min: 1, max: 10, step: 1 },
-        b: { min: 1, max: 10, step: 1 },
+        a: { min: 1, max: 10, step: 0.1 },
+        b: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -327,8 +327,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        mu: { min: -10, max: 10, step: 1 },
-        b: { min: 1, max: 10, step: 1 },
+        mu: { min: -10, max: 10, step: 0.1 },
+        b: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -341,8 +341,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        mu: { min: -10, max: 10, step: 1 },
-        c: { min: 1, max: 10, step: 1 },
+        mu: { min: -10, max: 10, step: 0.1 },
+        c: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -355,8 +355,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        mu: { min: -10, max: 10, step: 1 },
-        s: { min: 1, max: 10, step: 1 },
+        mu: { min: -10, max: 10, step: 0.1 },
+        s: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -369,8 +369,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        mu: { min: -10, max: 10, step: 1 },
-        sigma: { min: 1, max: 10, step: 1 },
+        mu: { min: -10, max: 10, step: 0.1 },
+        sigma: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -383,8 +383,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        mu: { min: -10, max: 10, step: 1 },
-        sigma: { min: 1, max: 10, step: 1 },
+        mu: { min: -10, max: 10, step: 0.1 },
+        sigma: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -400,8 +400,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        alpha: { min: 1, max: 10, step: 1 },
-        beta: { min: 1, max: 10, step: 1 },
+        alpha: { min: 1, max: 10, step: 0.1 },
+        beta: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -414,7 +414,7 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        sigma: { min: 1, max: 10, step: 1 },
+        sigma: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -427,7 +427,7 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        nu: { min: 1, max: 10, step: 1 },
+        nu: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -446,8 +446,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        a: { min: -10, max: 10, step: 1 },
-        b: { min: -10, max: 10, step: 1 },
+        a: { min: -10, max: 10, step: 0.1 },
+        b: { min: -10, max: 10, step: 0.1 },
         c: { min: -10, max: 1, step: 0.1 }, //TODO: Might be help to clamp c between a and b.
       };
     },
@@ -462,8 +462,8 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        a: { min: -10, max: 10, step: 1 },
-        b: { min: -10, max: 10, step: 1 },
+        a: { min: -10, max: 10, step: 0.1 },
+        b: { min: -10, max: 10, step: 0.1 },
       };
     },
   },
@@ -512,7 +512,7 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        n: { min: 0, max: 10, step: 1 },
+        n: { min: 0, max: 10, step: 0.1 },
         p: { min: 0, max: 1, step: 0.05 },
       };
     },
@@ -527,8 +527,8 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        a: { min: -10, max: 10, step: 1 },
-        b: { min: -10, max: 10, step: 1 },
+        a: { min: -10, max: 10, step: 0.1 },
+        b: { min: -10, max: 10, step: 0.1 },
       };
     },
   },
@@ -570,9 +570,9 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        N: { min: 0, max: 10, step: 1 },
-        K: { min: 0, max: 10, step: 1 },
-        n: { min: 0, max: 10, step: 1 },
+        N: { min: 0, max: 10, step: 0.1 },
+        K: { min: 0, max: 10, step: 0.1 },
+        n: { min: 0, max: 10, step: 0.1 },
       };
     },
   },
@@ -589,7 +589,7 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        r: { min: 1, max: 10, step: 1 },
+        r: { min: 1, max: 10, step: 0.1 },
         p: { min: 0.01, max: 1, step: 0.05 },
       };
     },
@@ -603,7 +603,7 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        lambda: { min: 1, max: 10, step: 1 },
+        lambda: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
