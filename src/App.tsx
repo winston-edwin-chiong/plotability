@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
 import DistributionsData from "./distributions_data.json";
-import { MantineProvider, Button, Radio, Group } from "@mantine/core";
+import { MantineProvider, Button, Radio, Group, } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
 import { useState } from "react";
 import {
@@ -83,7 +83,7 @@ export default function App() {
     for (let i = 0; i < newDistributions.length; i++) {
       const chartData = getDistributionData(newDistributions[i], distFunction);
       newData[i].data = chartData;
-      newData[i].name = newDistributions[i].name;
+      newData[i].name = newDistributions[i].name + "(" + Object.values(newDistributions[i].params) + ")";
       newData[i].type = newDistributions[i].type;
     }
     setData(newData);
@@ -136,7 +136,7 @@ export default function App() {
     for (let i = 0; i < newDistributions.length; i++) {
       const chartData = getDistributionData(newDistributions[i], distFunction);
       newData[i].data = chartData;
-      newData[i].name = newDistributions[i].name;
+      newData[i].name = newDistributions[i].name + "(" + Object.values(newDistributions[i].params) + ")";
       newData[i].type = newDistributions[i].type;
     }
     setData(newData);
@@ -234,8 +234,7 @@ export default function App() {
           {distFunction}
         </p>
       </div>
-
-      <div style={{ marginTop: "20px" }}>
+      <div>
         <Figure data={data} />
       </div>
     </MantineProvider>

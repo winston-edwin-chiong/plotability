@@ -2,7 +2,7 @@ import * as stdlib_dists from "@stdlib/stats-base-dists";
 import { Point, Distribution } from "../interfaces/interfaces";
 
 /**
- * An object containing the continuous distributions and their associated functions, 
+ * An object containing the continuous distributions and their associated functions,
  * and a function that calculates x-value bounds from a distribution's parameters.
  */
 const continuousDists: {
@@ -111,7 +111,7 @@ const continuousDists: {
     xBounds: (params) => [
       0,
       stdlib_dists.f.quantile(
-        0.95,
+        0.75,
         ...(Object.values(params) as [number, number])
       ),
     ],
@@ -188,7 +188,7 @@ const continuousDists: {
     xBounds: (params) => [
       params["mu"],
       stdlib_dists.levy.quantile(
-        0.95,
+        0.75,
         ...(Object.values(params) as [number, number])
       ),
     ],
@@ -275,7 +275,7 @@ const continuousDists: {
 };
 
 /**
- * An object containing the discrete distributions and their associated functions, 
+ * An object containing the discrete distributions and their associated functions,
  * and a function that calculates x-value bounds from a distribution's parameters.
  */
 const discreteDists: {
@@ -349,13 +349,13 @@ const discreteDists: {
 
 /**
  * This function calculates the data for a continuous distribution.
- * 
- * @param distFunc The distribution function that will be used to calculate the data. 
- * 
+ *
+ * @param distFunc The distribution function that will be used to calculate the data.
+ *
  * @param params The parameters of the distribution, as an object. Passed to `distFunc`.
- * 
+ *
  * @param xBounds The bounds of the x-axis, as an array.
- * 
+ *
  * @returns An array of `Point` objects containing the x- and y-values of the distribution.
  */
 function calculateContinuousDistData(
@@ -370,8 +370,8 @@ function calculateContinuousDistData(
     i <= xBounds[1] + 1;
     i += (xBounds[1] - 1 - xBounds[0] + 1) / numPoints
   ) {
-    const y = Number(distFunc(i, ...Object.values(params)).toFixed(4));
-    const x = Number(i.toFixed(4));
+    const y = Number(distFunc(i, ...Object.values(params)).toFixed(10)); //! This needs adjusting distributions where the y-value changes marginally in comparison to the x-value
+    const x = Number(i.toFixed(8));
     points.push({ x: x, y: y });
   }
   return points;
@@ -379,13 +379,13 @@ function calculateContinuousDistData(
 
 /**
  * This function calculates the data for a discrete distribution.
- * 
- * @param distFunc The distribution function that will be used to calculate the data. 
- * 
+ *
+ * @param distFunc The distribution function that will be used to calculate the data.
+ *
  * @param params The parameters of the distribution, as an object. Passed to `distFunc`.
- * 
+ *
  * @param xBounds The discrete x-values to evaluate the distribution at.
- * 
+ *
  * @returns An array of `Point` objects containing the x- and y-values of the distribution.
  */
 function calculateDiscreteDistData(
@@ -404,11 +404,11 @@ function calculateDiscreteDistData(
 
 /**
  * This function creates an array of numbers from `a` to `b`.
- * 
+ *
  * @param a The start of the array.
- * 
+ *
  * @param b The end of the array.
- * 
+ *
  * @returns An array of numbers from `a` to `b`.
  */
 function createArrayFromAtoB(a: number, b: number): number[] {
@@ -417,11 +417,11 @@ function createArrayFromAtoB(a: number, b: number): number[] {
 
 /**
  * This function calculates the data for a distribution.
- * 
+ *
  * @param dist The `Distribution` object.
- * 
- * @param distFunc The distribution function that will be used to calculate the data. 
- * 
+ *
+ * @param distFunc The distribution function that will be used to calculate the data.
+ *
  * @returns A array of `Point` objects containing the x- and y-values of the distribution.
  */
 export function getDistributionData(
@@ -445,7 +445,7 @@ export function getDistributionData(
 
     case "discrete": {
       const func = discreteDists[name][distFunc as "pdf_pmf" | "cdf"];
-      
+
       return calculateDiscreteDistData(
         func,
         params,

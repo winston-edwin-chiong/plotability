@@ -18,7 +18,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   BarElement,
-  Filler, 
+  Filler,
   plugins
 );
 
@@ -37,8 +37,8 @@ const Figure = memo(({ data }: { data: Data[] }) => {
       data: dist.data,
       fill: true,
       backgroundColor: colors[i],
-      tension: 0.1,
       pointRadius: 0,
+      tension: 0.75,
     })),
   };
 
@@ -51,11 +51,16 @@ const Figure = memo(({ data }: { data: Data[] }) => {
           text: "X",
         },
         ticks: {
-          stepSize: 1, // TODO: Set the step size to 1 if any of the distributions is discrete, otherwise leave as default
+          stepSize: 1.0,
         },
       },
       y: {
         beginAtZero: true,
+      },
+    },
+    plugins: {
+      tooltip: {
+        enabled: false,
       },
     },
   };
