@@ -5,6 +5,10 @@ import { Distribution } from "../interfaces/interfaces";
 import { getSliders } from "../utils/validations";
 import { useState } from "react";
 
+const MIN = -1 * 10 ** 7;
+const MAX = 1 * 10 ** 7;
+const DECIMAL_SCALE = 7;
+
 export default function ParameterSettings({
   distribution,
   inputOnChange,
@@ -13,9 +17,21 @@ export default function ParameterSettings({
   index,
 }: {
   distribution: Distribution;
-  inputOnChange: (value: number | string, parameter: string, index: number) => void;
-  sliderOnChange: (value: number | string, parameter: string, index: number) => void;
-  sliderOnChangeEnd: (value: number | string, parameter: string, index: number) => void;
+  inputOnChange: (
+    value: number | string,
+    parameter: string,
+    index: number
+  ) => void;
+  sliderOnChange: (
+    value: number | string,
+    parameter: string,
+    index: number
+  ) => void;
+  sliderOnChangeEnd: (
+    value: number | string,
+    parameter: string,
+    index: number
+  ) => void;
   index: number;
 }) {
   return (
@@ -29,7 +45,9 @@ export default function ParameterSettings({
               label={parameter}
               onChange={(value) => inputOnChange(value, parameter, index)}
               error={distribution.errors?.[parameter]}
-              max={1 * 10**7}
+              min={MIN}
+              decimalScale={DECIMAL_SCALE}
+              max={MAX}
               clampBehavior="strict"
             />
             <ParameterSlider
@@ -54,8 +72,16 @@ function ParameterSlider({
 }: {
   distribution: Distribution;
   parameter: string;
-  sliderOnChange: (value: number | string, parameter: string, index: number) => void;
-  sliderOnChangeEnd: (value: number | string, parameter: string, index: number) => void;
+  sliderOnChange: (
+    value: number | string,
+    parameter: string,
+    index: number
+  ) => void;
+  sliderOnChangeEnd: (
+    value: number | string,
+    parameter: string,
+    index: number
+  ) => void;
   index: number;
 }) {
   const sliders = getSliders(distribution);
@@ -90,18 +116,27 @@ function ParameterSlider({
           label="Min"
           onChange={(value) => handleSliderSettingChange(value, "min")}
           hideControls
+          min={MIN}
+          decimalScale={DECIMAL_SCALE}
+          max={MAX}
         />
         <NumberInput
           value={sliderSettings.max}
           label="Max"
           onChange={(value) => handleSliderSettingChange(value, "max")}
           hideControls
+          min={MIN}
+          decimalScale={DECIMAL_SCALE}
+          max={MAX}
         />
         <NumberInput
           value={sliderSettings.step}
           label="Step"
           onChange={(value) => handleSliderSettingChange(value, "step")}
           hideControls
+          min={MIN}
+          decimalScale={DECIMAL_SCALE}
+          max={MAX}
         />
       </Group>
       <div>Slider Settings: {JSON.stringify(sliderSettings)}</div>

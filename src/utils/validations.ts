@@ -427,7 +427,7 @@ const validateContinuousDists: {
     },
     sliders: () => {
       return {
-        nu: { min: 1, max: 10, step: 0.1 },
+        v: { min: 1, max: 10, step: 0.1 },
       };
     },
   },
@@ -534,8 +534,9 @@ const validateDiscreteDists: {
   },
   geometric: {
     validate: (params, errors) => {
-      if (params["p"] < 0 || params["p"] > 1) {
-        errors["p"] = "Probability must be between 0 and 1!";
+      if (params["p"] <= 0 || params["p"] > 1) {
+        errors["p"] =
+          "Probability must be greater 0 and less than or equal to 1!";
       }
       return errors;
     },
