@@ -1,4 +1,5 @@
 import "@mantine/core/styles.css";
+import "katex/dist/katex.min.css";
 import DistributionJSON from "./distributions_data.json";
 import { MantineProvider, Button, Radio, Group } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
@@ -9,12 +10,14 @@ import {
   DistributionSelect,
   Figure,
   QuantileSettings,
+  DistributionProperties
 } from "./components";
 import { getDistributionData } from "./utils/calculations";
 import { Distribution, Data } from "./interfaces/interfaces";
 import { validateDistribution } from "./utils/validations";
 import Markdown from "react-markdown";
-import markdown from "./pages/test.md"
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 /* Note that '0' is a valid parameter value for some distributions. */
 /* The code gets messy and there's a lot of type gymastics. A lot of voodoo. */
@@ -28,7 +31,9 @@ export default function App() {
     {
       name: "",
       type: "",
+      markdownContent: "",
       params: {},
+      properties: {},
       errors: {},
     },
   ]);
@@ -37,7 +42,10 @@ export default function App() {
     [number | string, number | string][]
   >([[0, 1]]);
 
-  const handleDistributionChange = (value: string | null, index: number) => {
+  const handleDistributionChange = async (
+    value: string | null,
+    index: number
+  ) => {
     if (!value || value === distributions[index].name) return;
 
     // Find the distribution information from the data.
@@ -52,10 +60,7 @@ export default function App() {
     ) as {
       [key: string]: number | string;
     };
-    const defaultQuantiles = distributionData?.quantiles as [
-      number,
-      number
-    ];
+    const defaultQuantiles = distributionData?.quantiles as [number, number];
 
     // Copy over parameter values up to the number of the new distribution's parameters.
     const oldKeys = Object.keys(distributions[index].params);
@@ -68,12 +73,24 @@ export default function App() {
       }
     }
 
+    // Fetch the distribution's markdown content.
+    let markdownContent = "";
+    try {
+      markdownContent = await import(`./markdown/${value}.md`).then(
+        (res) => res.default
+      );
+    } catch {
+      markdownContent = "**This file doesn't exist yet!**";
+    }
+
     const newDistributions = [
       ...distributions.slice(0, index),
       {
         name: value,
-        type: type as "" | "continuous" | "discrete",
+        type: (type as "continuous") || "discrete" || "",
+        markdownContent: markdownContent,
         params: newParamsValues,
+        properties: {},
         errors: {},
       },
       ...distributions.slice(index + 1),
@@ -188,7 +205,9 @@ export default function App() {
       {
         name: "",
         type: "",
+        markdownContent: "",
         params: {},
+        properties: {},
         errors: {},
       },
     ]);
@@ -230,10 +249,7 @@ export default function App() {
     const distributionData = DistributionJSON.distributions.filter(
       (dist) => dist.value === distributions[index].name
     )[0];
-    const defaultQuantiles = distributionData?.quantiles as [
-      number,
-      number
-    ];
+    const defaultQuantiles = distributionData?.quantiles as [number, number];
 
     const newQuantiles = [
       ...quantiles.slice(0, index),
@@ -247,9 +263,9 @@ export default function App() {
     if (!distributions[index].name) return;
     const newQuantiles = quantiles.map((quantile, i) => {
       if (i === index && typeof quantile[bound] === "string") {
-        // Remove leading zeroes from the string, and parse the string to a float. 
+        // Remove leading zeroes from the string, and parse the string to a float.
         // If the value is still invalid, set it to the default value.
-        const replaced = (quantile[bound] as string).replace(/^0+/, '');
+        const replaced = (quantile[bound] as string).replace(/^0+/, "");
         const parsedValue = parseFloat(replaced);
         return [
           ...quantile.slice(0, bound),
@@ -306,6 +322,12 @@ export default function App() {
             quantileBlur={handleQuantileBlur}
             index={index}
           />
+          <Markdown
+            children={distribution.markdownContent}
+            remarkPlugins={[remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+          ></Markdown>
+          <DistributionProperties distribution={distribution} />
           {distributions.length > 1 && (
             <Button variant="default" onClick={() => handleRemoveClick(index)}>
               - REMOVE DISTRIBUTION
@@ -321,30 +343,6 @@ export default function App() {
           + ADD ANOTHER!
         </Button>
       )}
-
-      {/* Render state in the DOM for debugging */}
-      <div style={{ marginTop: "20px" }}>
-        <h3>Debug Information:</h3>
-        <p>
-          <strong>Distribution Object:</strong>{" "}
-          {JSON.stringify(distributions, null, 2)}
-        </p>
-        <p>
-          <strong>Distribution Object Length:</strong> {distributions.length}
-        </p>
-        <p>
-          <strong>Data Object Length:</strong> {data.length}
-        </p>
-        <p>
-          <strong>Calculation Type: </strong>
-          {distFunction}
-        </p>
-        <p>
-          <strong>Quantile: </strong>
-          {JSON.stringify(quantiles)}
-        </p>
-      </div>
-      <Markdown children={markdown}></Markdown>
       <div>
         <Figure data={data} distFunc={distFunction} />
       </div>

@@ -7,7 +7,9 @@ interface Distribution {
   name: string;
   type: "continuous" | "discrete" | "";
   params: { [parameter: string]: number | string };
+  markdownContent: string;
   errors: { [option: string]: string };
+  properties: { [property: string]: number };
 }
 
 interface Data {
