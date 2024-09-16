@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
 import DistributionsData from "./distributions_data.json";
-import { MantineProvider, Button, Radio, Group, } from "@mantine/core";
+import { MantineProvider, Button, Radio, Group } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
 import { useState } from "react";
 import {
@@ -8,12 +8,16 @@ import {
   ParameterSettings,
   DistributionSelect,
   Figure,
+  QuantileSettings,
 } from "./components";
 import { getDistributionData } from "./utils/calculations";
 import { Distribution, Data } from "./interfaces/interfaces";
 import { validateDistribution } from "./utils/validations";
 
 /* Note that '0' is a valid parameter value for some distributions. */
+/* The code gets messy and there's a lot of type gymastics. A lot of voodoo. */
+
+const MAX_DISTRIBUTIONS = 3;
 
 export default function App() {
   const [distCategory, setdistCategory] = useInputState<string>("all");
@@ -27,19 +31,27 @@ export default function App() {
     },
   ]);
   const [data, setData] = useState<Data[]>([{ name: "", type: "", data: [] }]);
+  const [quantiles, setQuantiles] = useState<[number, number][]>([[0, 1]]);
 
   const handleDistributionChange = (value: string | null, index: number) => {
     if (!value || value === distributions[index].name) return;
 
-    // Find the distribution parameters from the data.
-    const type = DistributionsData.distributions.find(
-      (dist) => dist.value === value
-    )?.type;
-    const newParamsValues = DistributionsData.distributions
-      .find((dist) => dist.value === value)
-      ?.params.reduce((o, key) => Object.assign(o, { [key]: "" }), {}) as {
+    // Find the distribution information from the data.
+    const distributionFromJSON = structuredClone(
+      DistributionsData.distributions.find((dist) => dist.value === value)
+    );
+
+    const type = distributionFromJSON?.type;
+    const newParamsValues = distributionFromJSON?.params?.reduce(
+      (o, key) => Object.assign(o, { [key]: "" }),
+      {}
+    ) as {
       [key: string]: number | string;
     };
+    const defaultQuantiles = distributionFromJSON?.quantiles as [
+      number,
+      number
+    ];
 
     // Copy over parameter values up to the number of the new distribution's parameters.
     const oldKeys = Object.keys(distributions[index].params);
@@ -60,16 +72,18 @@ export default function App() {
       errors: {},
     };
     setDistributions(newDistributions);
+
+    const newQuantiles = [...quantiles];
+    newQuantiles[index] = defaultQuantiles;
+    setQuantiles(newQuantiles);
   };
 
   const handlePlotButtonClick = () => {
-    console.log("Plot button clicked!");
     // Validate the distribution parameters before plotting.
     const newDistributions = [...distributions];
     for (let i = 0; i < distributions.length; i++) {
       const errors = validateDistribution(distributions[i]);
       newDistributions[i] = { ...distributions[i], errors: errors };
-      console.log(errors);
     }
     setDistributions(newDistributions);
     for (let i = 0; i < newDistributions.length; i++) {
@@ -77,13 +91,20 @@ export default function App() {
       if (!(Object.keys(newDistributions[i].errors).length === 0)) return;
     }
 
-    console.log("Calculating and plotting...");
     // Calculate the new data and update the chart.
     const newData = [...data];
     for (let i = 0; i < newDistributions.length; i++) {
-      const chartData = getDistributionData(newDistributions[i], distFunction);
+      const chartData = getDistributionData(
+        newDistributions[i],
+        distFunction,
+        quantiles[i]
+      );
       newData[i].data = chartData;
-      newData[i].name = newDistributions[i].name + "(" + Object.values(newDistributions[i].params) + ")";
+      newData[i].name =
+        newDistributions[i].name +
+        "(" +
+        Object.values(newDistributions[i].params) +
+        ")";
       newData[i].type = newDistributions[i].type;
     }
     setData(newData);
@@ -109,7 +130,6 @@ export default function App() {
     parameter: string,
     index: number
   ) => {
-    console.log("Slider change end!");
     // The sliders also update the chart. This function is called when the user stops dragging the slider.
     const newParamsValues = { ...distributions[index].params };
     newParamsValues[parameter] = value;
@@ -130,13 +150,20 @@ export default function App() {
       if (!(Object.keys(newDistributions[i].errors).length === 0)) return;
     }
 
-    console.log("Calculating and plotting...");
     // Calculate the new data and update the chart.
     const newData = [...data];
     for (let i = 0; i < newDistributions.length; i++) {
-      const chartData = getDistributionData(newDistributions[i], distFunction);
+      const chartData = getDistributionData(
+        newDistributions[i],
+        distFunction,
+        quantiles[i]
+      );
       newData[i].data = chartData;
-      newData[i].name = newDistributions[i].name + "(" + Object.values(newDistributions[i].params) + ")";
+      newData[i].name =
+        newDistributions[i].name +
+        "(" +
+        Object.values(newDistributions[i].params) +
+        ")";
       newData[i].type = newDistributions[i].type;
     }
     setData(newData);
@@ -153,16 +180,48 @@ export default function App() {
       },
     ]);
     setData([...data, { name: "", type: "", data: [] }]);
+    setQuantiles([...quantiles, [0, 1]]);
   };
 
   const handleRemoveClick = (index: number) => {
-    // Remove the distribution and its data from the state.
+    // Remove the distribution, its data, and its quantile from the state.
     const newDistributions = [...distributions];
     newDistributions.splice(index, 1);
     setDistributions(newDistributions);
     const newData = [...data];
     newData.splice(index, 1);
     setData(newData);
+    const newQuantiles = [...quantiles];
+    newQuantiles.splice(index, 1);
+    setQuantiles(newQuantiles);
+  };
+
+  const handleQuantileChange = (
+    value: number | string,
+    index: number,
+    bound: 0 | 1
+  ) => {
+    if (typeof value === "string") return;
+    const newQuantiles = [...quantiles];
+    newQuantiles[index][bound] = value;
+    setQuantiles(newQuantiles);
+  };
+
+  const handleQuantileResetOnClick = (index: number) => {
+    // Find the distribution information from the data.
+    const distributionFromJSON = structuredClone(
+      DistributionsData.distributions.find(
+        (dist) => dist.value === distributions[index].name
+      )
+    );
+    const defaultQuantiles = distributionFromJSON?.quantiles as [
+      number,
+      number
+    ];
+
+    const newQuantiles = [...quantiles];
+    newQuantiles[index] = defaultQuantiles;
+    setQuantiles(newQuantiles);
   };
 
   return (
@@ -202,15 +261,23 @@ export default function App() {
             sliderOnChangeEnd={handleSliderChangeEnd}
             index={index}
           />
+          <QuantileSettings
+            quantiles={quantiles}
+            quantilesOnChange={handleQuantileChange}
+            quantileResetOnClick={handleQuantileResetOnClick}
+            index={index}
+          />
           {distributions.length > 1 && (
-            <Button variant="default" onClick={() => handleRemoveClick(index)}>- REMOVE DISTRIBUTION</Button>
+            <Button variant="default" onClick={() => handleRemoveClick(index)}>
+              - REMOVE DISTRIBUTION
+            </Button>
           )}
         </div>
       ))}
       <Button variant="default" onClick={() => handlePlotButtonClick()}>
         PLOT!
       </Button>
-      {distributions.length < 3 && (
+      {distributions.length < MAX_DISTRIBUTIONS && (
         <Button variant="default" onClick={handleAddClick}>
           + ADD ANOTHER!
         </Button>
@@ -232,6 +299,10 @@ export default function App() {
         <p>
           <strong>Calculation Type: </strong>
           {distFunction}
+        </p>
+        <p>
+          <strong>Quantile: </strong>
+          {JSON.stringify(quantiles)}
         </p>
       </div>
       <div>

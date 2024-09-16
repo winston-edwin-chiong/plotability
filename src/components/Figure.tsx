@@ -29,7 +29,6 @@ const colors = [
 ];
 
 const Figure = memo(({ data }: { data: Data[] }) => {
-  console.log("rendering continuous chart");
   const chartData = {
     datasets: data.map((dist, i) => ({
       type: dist.type == "continuous" ? ("line" as const) : ("bar" as const),
@@ -69,7 +68,7 @@ const Figure = memo(({ data }: { data: Data[] }) => {
     id: "chart-plugins",
     legend: {
       display: false,
-      position: "right"
+      position: "right",
     },
     title: {
       display: true,
