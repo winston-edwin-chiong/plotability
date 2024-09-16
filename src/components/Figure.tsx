@@ -7,6 +7,8 @@ import {
   LineElement,
   BarElement,
   Filler,
+  BarController,
+  LineController,
   Chart as ChartJS,
   plugins,
 } from "chart.js";
@@ -19,6 +21,8 @@ ChartJS.register(
   LineElement,
   BarElement,
   Filler,
+  BarController,
+  LineController,
   plugins
 );
 
@@ -31,7 +35,7 @@ const colors = [
 const Figure = memo(({ data }: { data: Data[] }) => {
   const chartData = {
     datasets: data.map((dist, i) => ({
-      type: dist.type == "continuous" ? ("line" as const) : ("bar" as const),
+      type: dist.type === "continuous" ? ("line" as const) : ("bar" as const),
       label: dist.name,
       data: dist.data,
       fill: true,
