@@ -3,7 +3,7 @@ import { Point, Distribution } from "../interfaces/interfaces";
 
 /**
  * An object containing the continuous distributions and their associated functions,
- * and a function that calculates x-value bounds from a distribution's parameters.
+ * and a function that calculates appropriate x-value bounds from a distribution's parameters.
  */
 const continuousDists: {
   [distribution: string]: {
@@ -365,13 +365,18 @@ function calculateContinuousDistData(
 ): Point[] {
   const points: Point[] = [];
   const numPoints = 1000;
+  console.log("X array: ", xBounds);
   for (
-    let i = xBounds[0] - 1;
-    i <= xBounds[1] + 1;
-    i += (xBounds[1] - 1 - xBounds[0] + 1) / numPoints
+    let i = xBounds[0];
+    i <= xBounds[1];
+    i += (xBounds[1] - xBounds[0]) / numPoints
   ) {
-    const y = Number(distFunc(i, ...Object.values(params)).toFixed(10)); //! This needs adjusting distributions where the y-value changes marginally in comparison to the x-value
-    const x = Number(i.toFixed(8));
+    //! There is an issue here for distributions with a large range between the plotted x- values, 
+    //! espcially at the tails of the distributions, the y- values will not change very much (or at all), depending
+    //! on the decimal precision of the y- value.
+    const y = Number(distFunc(i, ...Object.values(params)).toFixed(12));
+    const x = Number(i.toFixed(12));
+    console.log("X is: ", x, "Y is ", y)
     points.push({ x: x, y: y });
   }
   return points;

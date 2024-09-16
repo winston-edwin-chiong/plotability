@@ -29,6 +29,8 @@ export default function ParameterSettings({
               label={parameter}
               onChange={(value) => inputOnChange(value, parameter, index)}
               error={distribution.errors?.[parameter]}
+              max={1 * 10**7}
+              clampBehavior="strict"
             />
             <ParameterSlider
               distribution={distribution}
