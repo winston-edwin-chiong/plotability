@@ -247,7 +247,7 @@ export default function App() {
       if (i === index && typeof quantile[bound] === "string") {
         // Remove leading zeroes from the string, and parse the string to a float. 
         // If the value is still invalid, set it to the default value.
-        const replaced = quantile[bound].replace(/^0+/, '');
+        const replaced = (quantile[bound] as string).replace(/^0+/, '');
         const parsedValue = parseFloat(replaced);
         return [
           ...quantile.slice(0, bound),
@@ -255,8 +255,8 @@ export default function App() {
           ...quantile.slice(bound + 1),
         ];
       }
+      return quantile;
     });
-    console.log(newQuantiles)
     setQuantiles(newQuantiles as [number, number][]);
   };
 

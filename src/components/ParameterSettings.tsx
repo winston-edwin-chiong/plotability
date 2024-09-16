@@ -134,7 +134,7 @@ function ParameterSlider({
           label="Min"
           onChange={(value) => handleSliderSettingChange(value, "min")}
           onBlur={() => handleSliderSettingBlur("min")}
-          trimLeadingZeroesOnBlur={false} //* Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
+          trimLeadingZeroesOnBlur={false} // Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
           hideControls
           min={MIN}
           decimalScale={DECIMAL_SCALE}
@@ -145,7 +145,7 @@ function ParameterSlider({
           label="Max"
           onChange={(value) => handleSliderSettingChange(value, "max")}
           onBlur={() => handleSliderSettingBlur("max")}
-          trimLeadingZeroesOnBlur={false} //* Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
+          trimLeadingZeroesOnBlur={false} // Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
           hideControls
           min={MIN}
           decimalScale={DECIMAL_SCALE}
@@ -156,7 +156,7 @@ function ParameterSlider({
           label="Step"
           onChange={(value) => handleSliderSettingChange(value, "step")}
           onBlur={() => handleSliderSettingBlur("step")}
-          trimLeadingZeroesOnBlur={false} //* Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
+          trimLeadingZeroesOnBlur={false} // Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
           hideControls
           min={MIN}
           decimalScale={DECIMAL_SCALE}

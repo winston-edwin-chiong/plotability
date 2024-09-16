@@ -27,62 +27,81 @@ ChartJS.register(
   Filler,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
+// https://coolors.co/3c91e6-342e37-a2d729-fafffd-fa824c
 const colors = [
-  "rgba(255, 99, 132, 0.6)",
-  "rgba(54, 162, 235, 0.6)",
-  "rgba(255, 206, 86, 0.6)",
+  "rgba(250, 130, 76, 0.6)",
+  "rgba(60, 145, 230, 0.6)",
+  "rgba(162, 215, 41, 0.6)",
 ];
 
-const Figure = memo(({ data, distFunc }: { data: Data[]; distFunc: string }) => {
-  const chartData = {
-    datasets: data.map((dist, i) => ({
-      type: dist.type === "continuous" ? ("line" as const) : ("bar" as const),
-      label: dist.name,
-      data: dist.data,
-      fill: true,
-      backgroundColor: colors[i],
-      pointRadius: 0,
-      tension: 0.75,
-    })),
-  };
+const Figure = memo(
+  ({ data, distFunc }: { data: Data[]; distFunc: string }) => {
+    const chartData = {
+      datasets: data.map((dist, i) => ({
+        type: getChartType(dist.type),
+        label: dist.name,
+        data: dist.data,
+        fill: true,
+        backgroundColor: colors[i],
+        pointRadius: 0,
+        tension: 0.75,
+      })),
+    };
 
-  const options = {
-    scales: {
-      x: {
-        type: "linear" as const,
+    const options = {
+      scales: {
+        x: {
+          type: "linear" as const,
+          title: {
+            display: true,
+            text: "X",
+          },
+          ticks: { stepSize: 1.0 },
+          beginAtZero: true,
+        },
+        y: {
+          beginAtZero: true,
+        },
+      },
+      plugins: {
+        tooltip: { enabled: false },
+        legend: { position: "top" as const },
         title: {
           display: true,
-          text: "X",
+          text: getChartTitle(distFunc),
         },
-        ticks: {
-          stepSize: 1.0,
+        colors: {
+          enabled: true,
         },
       },
-      y: {
-        beginAtZero: true,
-      },
-    },
-    plugins: {
-      tooltip: {
-        enabled: false,
-      },
-      legend: {
-        position: "right" as const,
-      },
-      title: {
-        display: true,
-        text:
-          distFunc === "pdf_pmf"
-            ? "Probability Density Function"
-            : "Cumulative Distribution Function",
-      },
-    },
-  };
+    };
 
-  return <Chart data={chartData} options={options} type={"line"}/>;
-});
+    return <Chart data={chartData} options={options} type={"line"} />;
+  }
+);
+
+function getChartTitle(distFunc: string) {
+  switch (distFunc) {
+    case "pdf_pmf":
+      return "Probability Density Function";
+    case "cdf":
+      return "Cumulative Distribution Function";
+    default:
+      return "";
+  }
+}
+
+function getChartType(distType: string) {
+  switch (distType) {
+    case "continuous":
+    default:
+      return "line" as const;
+    case "discrete":
+      return "bar" as const;
+  }
+}
 
 export default Figure;

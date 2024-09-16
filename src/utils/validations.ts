@@ -512,7 +512,7 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        n: { min: 0, max: 10, step: 0.1 },
+        n: { min: 0, max: 25, step: 1 },
         p: { min: 0, max: 1, step: 0.05 },
       };
     },
@@ -523,12 +523,16 @@ const validateDiscreteDists: {
         errors["a"] = "Parameter a must be less than b!";
         errors["b"] = "Parameter a must be less than b!";
       }
+      if (!Number.isInteger(params["a"]) || !Number.isInteger(params["b"])) {
+        errors["a"] = "Parameter a must be an integer!";
+        errors["b"] = "Parameter b must be an integer!";
+      }
       return errors;
     },
     sliders: () => {
       return {
-        a: { min: -10, max: 10, step: 0.1 },
-        b: { min: -10, max: 10, step: 0.1 },
+        a: { min: -10, max: 10, step: 1 },
+        b: { min: -10, max: 10, step: 1 },
       };
     },
   },
@@ -571,9 +575,9 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        N: { min: 0, max: 10, step: 0.1 },
-        K: { min: 0, max: 10, step: 0.1 },
-        n: { min: 0, max: 10, step: 0.1 },
+        N: { min: 0, max: 25, step: 1 },
+        K: { min: 0, max: 25, step: 1 },
+        n: { min: 0, max: 25, step: 1 },
       };
     },
   },
@@ -590,7 +594,7 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        r: { min: 1, max: 10, step: 0.1 },
+        r: { min: 1, max: 25, step: 1 },
         p: { min: 0.01, max: 1, step: 0.05 },
       };
     },
@@ -604,7 +608,7 @@ const validateDiscreteDists: {
     },
     sliders: () => {
       return {
-        lambda: { min: 1, max: 10, step: 0.1 },
+        lambda: { min: 1, max: 25, step: 1 },
       };
     },
   },

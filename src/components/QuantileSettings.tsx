@@ -24,7 +24,7 @@ export default function QuantileSettings({
         value={quantiles[index][0]}
         onChange={(value) => quantilesOnChange(value, index, 0)}
         onBlur={() => {quantileBlur(index, 0)}}
-        trimLeadingZeroesOnBlur={false} //* Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
+        trimLeadingZeroesOnBlur={false} // Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
         min={0}
         max={1}
         step={0.005}
@@ -33,7 +33,7 @@ export default function QuantileSettings({
         value={quantiles[index][1]}
         onChange={(value) => quantilesOnChange(value, index, 1)}
         onBlur={() => {quantileBlur(index, 1)}}
-        trimLeadingZeroesOnBlur={false} //* Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
+        trimLeadingZeroesOnBlur={false} // Because of the way the NumberInput component works, we need to set this to false for onBlur to work correctly.
         min={0}
         max={1}
         step={0.005}
