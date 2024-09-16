@@ -107,7 +107,7 @@ function ParameterSlider({
     if (typeof sliderSettings[setting] === "string") {
       // Remove leading zeroes from the string, and parse the string to a float.
       // If the value is still invalid, set it to the default value.
-      const replaced = sliderSettings[setting].replace(/^0+/, "");
+      const replaced = (sliderSettings[setting] as string).replace(/^0+/, "");
       const parsedValue = parseFloat(replaced);
       setSliderSettings({
         ...sliderSettings,
