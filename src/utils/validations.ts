@@ -448,7 +448,7 @@ const validateContinuousDists: {
       return {
         a: { min: -10, max: 10, step: 0.1 },
         b: { min: -10, max: 10, step: 0.1 },
-        c: { min: -10, max: 1, step: 0.1 }, //TODO: Might be help to clamp c between a and b.
+        c: { min: -10, max: 1, step: 0.1 },
       };
     },
   },

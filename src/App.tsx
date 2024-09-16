@@ -1,5 +1,5 @@
 import "@mantine/core/styles.css";
-import DistributionsData from "./distributions_data.json";
+import DistributionJSON from "./distributions_data.json";
 import { MantineProvider, Button, Radio, Group } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
 import { useState } from "react";
@@ -31,24 +31,26 @@ export default function App() {
     },
   ]);
   const [data, setData] = useState<Data[]>([{ name: "", type: "", data: [] }]);
-  const [quantiles, setQuantiles] = useState<[number, number][]>([[0, 1]]);
+  const [quantiles, setQuantiles] = useState<
+    [number | string, number | string][]
+  >([[0, 1]]);
 
   const handleDistributionChange = (value: string | null, index: number) => {
     if (!value || value === distributions[index].name) return;
 
     // Find the distribution information from the data.
-    const distributionFromJSON = structuredClone(
-      DistributionsData.distributions.find((dist) => dist.value === value)
-    );
+    const distributionData = DistributionJSON.distributions.filter(
+      (dist) => dist.value === value
+    )[0];
 
-    const type = distributionFromJSON?.type;
-    const newParamsValues = distributionFromJSON?.params?.reduce(
+    const type = distributionData?.type;
+    const newParamsValues = distributionData?.params?.reduce(
       (o, key) => Object.assign(o, { [key]: "" }),
       {}
     ) as {
       [key: string]: number | string;
     };
-    const defaultQuantiles = distributionFromJSON?.quantiles as [
+    const defaultQuantiles = distributionData?.quantiles as [
       number,
       number
     ];
@@ -64,49 +66,57 @@ export default function App() {
       }
     }
 
-    const newDistributions = [...distributions];
-    newDistributions[index] = {
-      name: value,
-      type: type as "" | "continuous" | "discrete",
-      params: newParamsValues,
-      errors: {},
-    };
+    const newDistributions = [
+      ...distributions.slice(0, index),
+      {
+        name: value,
+        type: type as "" | "continuous" | "discrete",
+        params: newParamsValues,
+        errors: {},
+      },
+      ...distributions.slice(index + 1),
+    ];
     setDistributions(newDistributions);
 
-    const newQuantiles = [...quantiles];
-    newQuantiles[index] = defaultQuantiles;
+    const newQuantiles = [
+      ...quantiles.slice(0, index),
+      defaultQuantiles,
+      ...quantiles.slice(index + 1),
+    ];
     setQuantiles(newQuantiles);
   };
 
   const handlePlotButtonClick = () => {
     // Validate the distribution parameters before plotting.
-    const newDistributions = [...distributions];
-    for (let i = 0; i < distributions.length; i++) {
-      const errors = validateDistribution(distributions[i]);
-      newDistributions[i] = { ...distributions[i], errors: errors };
-    }
+    const newDistributions = distributions.map((dist) => {
+      const errors = validateDistribution(dist);
+      return { ...dist, errors: errors };
+    });
     setDistributions(newDistributions);
+
+    // Don't calculate & plot if there are errors.
     for (let i = 0; i < newDistributions.length; i++) {
-      // Don't calculate & plot if there are errors.
       if (!(Object.keys(newDistributions[i].errors).length === 0)) return;
     }
 
     // Calculate the new data and update the chart.
-    const newData = [...data];
-    for (let i = 0; i < newDistributions.length; i++) {
+    const newData = data.map((data, i) => {
       const chartData = getDistributionData(
         newDistributions[i],
         distFunction,
-        quantiles[i]
+        quantiles[i] as [number, number]
       );
-      newData[i].data = chartData;
-      newData[i].name =
-        newDistributions[i].name +
-        "(" +
-        Object.values(newDistributions[i].params) +
-        ")";
-      newData[i].type = newDistributions[i].type;
-    }
+      return {
+        ...data,
+        data: chartData,
+        name:
+          newDistributions[i].name +
+          "(" +
+          Object.values(newDistributions[i].params) +
+          ")",
+        type: newDistributions[i].type,
+      };
+    });
     setData(newData);
   };
 
@@ -115,13 +125,12 @@ export default function App() {
     parameter: string,
     index: number
   ) => {
-    const newParamsValues = { ...distributions[index].params };
-    newParamsValues[parameter] = value;
-    const newDistributions = [...distributions];
-    newDistributions[index] = {
-      ...distributions[index],
-      params: newParamsValues,
-    };
+    const newDistributions = distributions.map((dist, i) => {
+      if (i === index) {
+        return { ...dist, params: { ...dist.params, [parameter]: value } };
+      }
+      return dist;
+    });
     setDistributions(newDistributions);
   };
 
@@ -131,41 +140,43 @@ export default function App() {
     index: number
   ) => {
     // The sliders also update the chart. This function is called when the user stops dragging the slider.
-    const newParamsValues = { ...distributions[index].params };
-    newParamsValues[parameter] = value;
-    const newDistributions = [...distributions];
-    newDistributions[index] = {
-      ...distributions[index],
-      params: newParamsValues,
-    };
+    const updatedDistributions = distributions.map((dist, i) => {
+      if (i === index) {
+        return { ...dist, params: { ...dist.params, [parameter]: value } };
+      }
+      return dist;
+    });
 
     // Validate the distribution parameters before plotting.
-    for (let i = 0; i < newDistributions.length; i++) {
-      const errors = validateDistribution(newDistributions[i]);
-      newDistributions[i] = { ...newDistributions[i], errors: errors };
-    }
+    const newDistributions = updatedDistributions.map((dist) => {
+      const errors = validateDistribution(dist);
+      return { ...dist, errors: errors };
+    });
     setDistributions(newDistributions);
+
     // Don't calculate & plot if there are errors.
     for (let i = 0; i < newDistributions.length; i++) {
       if (!(Object.keys(newDistributions[i].errors).length === 0)) return;
     }
 
     // Calculate the new data and update the chart.
-    const newData = [...data];
-    for (let i = 0; i < newDistributions.length; i++) {
+    const newData = data.map((data, i) => {
       const chartData = getDistributionData(
         newDistributions[i],
         distFunction,
-        quantiles[i]
+        quantiles[i] as [number, number]
       );
-      newData[i].data = chartData;
-      newData[i].name =
-        newDistributions[i].name +
-        "(" +
-        Object.values(newDistributions[i].params) +
-        ")";
-      newData[i].type = newDistributions[i].type;
-    }
+      return {
+        ...data,
+        data: chartData,
+        name:
+          newDistributions[i].name +
+          "(" +
+          Object.values(newDistributions[i].params) +
+          ")",
+        type: newDistributions[i].type,
+      };
+    });
     setData(newData);
   };
 
@@ -185,14 +196,11 @@ export default function App() {
 
   const handleRemoveClick = (index: number) => {
     // Remove the distribution, its data, and its quantile from the state.
-    const newDistributions = [...distributions];
-    newDistributions.splice(index, 1);
+    const newDistributions = distributions.filter((_, i) => i !== index);
     setDistributions(newDistributions);
-    const newData = [...data];
-    newData.splice(index, 1);
+    const newData = data.filter((_, i) => i !== index);
     setData(newData);
-    const newQuantiles = [...quantiles];
-    newQuantiles.splice(index, 1);
+    const newQuantiles = quantiles.filter((_, i) => i !== index);
     setQuantiles(newQuantiles);
   };
 
@@ -201,27 +209,55 @@ export default function App() {
     index: number,
     bound: 0 | 1
   ) => {
-    if (typeof value === "string") return;
-    const newQuantiles = [...quantiles];
-    newQuantiles[index][bound] = value;
-    setQuantiles(newQuantiles);
+    const newQuantiles = quantiles.map((quantile, i) => {
+      if (i === index) {
+        return [
+          ...quantile.slice(0, bound),
+          value,
+          ...quantile.slice(bound + 1),
+        ];
+      }
+      return quantile;
+    });
+    setQuantiles(newQuantiles as [number, number][]);
   };
 
   const handleQuantileResetOnClick = (index: number) => {
+    if (!distributions[index].name) return;
     // Find the distribution information from the data.
-    const distributionFromJSON = structuredClone(
-      DistributionsData.distributions.find(
-        (dist) => dist.value === distributions[index].name
-      )
-    );
-    const defaultQuantiles = distributionFromJSON?.quantiles as [
+    const distributionData = DistributionJSON.distributions.filter(
+      (dist) => dist.value === distributions[index].name
+    )[0];
+    const defaultQuantiles = distributionData?.quantiles as [
       number,
       number
     ];
 
-    const newQuantiles = [...quantiles];
-    newQuantiles[index] = defaultQuantiles;
+    const newQuantiles = [
+      ...quantiles.slice(0, index),
+      defaultQuantiles,
+      ...quantiles.slice(index + 1),
+    ];
     setQuantiles(newQuantiles);
+  };
+
+  const handleQuantileBlur = (index: number, bound: number) => {
+    if (!distributions[index].name) return;
+    const newQuantiles = quantiles.map((quantile, i) => {
+      if (i === index && typeof quantile[bound] === "string") {
+        // Remove leading zeroes from the string, and parse the string to a float. 
+        // If the value is still invalid, set it to the default value.
+        const replaced = quantile[bound].replace(/^0+/, '');
+        const parsedValue = parseFloat(replaced);
+        return [
+          ...quantile.slice(0, bound),
+          isNaN(parsedValue) ? (bound === 0 ? 0.005 : 0.995) : parsedValue,
+          ...quantile.slice(bound + 1),
+        ];
+      }
+    });
+    console.log(newQuantiles)
+    setQuantiles(newQuantiles as [number, number][]);
   };
 
   return (
@@ -265,6 +301,7 @@ export default function App() {
             quantiles={quantiles}
             quantilesOnChange={handleQuantileChange}
             quantileResetOnClick={handleQuantileResetOnClick}
+            quantileBlur={handleQuantileBlur}
             index={index}
           />
           {distributions.length > 1 && (
