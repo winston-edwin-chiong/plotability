@@ -10,7 +10,9 @@ import {
   BarController,
   LineController,
   Chart as ChartJS,
-  plugins,
+  Title,
+  Tooltip,
+  Legend,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 
@@ -20,10 +22,12 @@ ChartJS.register(
   PointElement,
   LineElement,
   BarElement,
-  Filler,
   BarController,
   LineController,
-  plugins
+  Filler,
+  Title,
+  Tooltip,
+  Legend
 );
 
 const colors = [
@@ -32,7 +36,7 @@ const colors = [
   "rgba(255, 206, 86, 0.6)",
 ];
 
-const Figure = memo(({ data }: { data: Data[] }) => {
+const Figure = memo(({ data, distFunc }: { data: Data[]; distFunc: string }) => {
   const chartData = {
     datasets: data.map((dist, i) => ({
       type: dist.type === "continuous" ? ("line" as const) : ("bar" as const),
@@ -65,24 +69,20 @@ const Figure = memo(({ data }: { data: Data[] }) => {
       tooltip: {
         enabled: false,
       },
+      legend: {
+        position: "right" as const,
+      },
+      title: {
+        display: true,
+        text:
+          distFunc === "pdf_pmf"
+            ? "Probability Density Function"
+            : "Cumulative Distribution Function",
+      },
     },
   };
 
-  const plugins = {
-    id: "chart-plugins",
-    legend: {
-      display: false,
-      position: "right",
-    },
-    title: {
-      display: true,
-      text: "Probability Density Function",
-    },
-  };
-
-  return (
-    <Chart data={chartData} options={options} plugins={[plugins]} type="line" />
-  );
+  return <Chart data={chartData} options={options} type={"line"}/>;
 });
 
 export default Figure;

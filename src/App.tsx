@@ -306,7 +306,7 @@ export default function App() {
         </p>
       </div>
       <div>
-        <Figure data={data} />
+        <Figure data={data} distFunc={distFunction} />
       </div>
     </MantineProvider>
   );
