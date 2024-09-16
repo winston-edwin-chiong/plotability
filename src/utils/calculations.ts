@@ -50,27 +50,24 @@ export function getDistributionData(
  * - `median` - The median of the distribution.
  * - `std` - The standard deviation of the distribution.
  */
-export function getDistributionProperties(dist: Distribution): {
+export function getDistributionProperties(distName: string, distType: "continuous" | "discrete", distParams: {[param: string]: number | string}): {
   [property: string]: number;
 } {
-  const name = dist.name;
-  const type = dist.type as "continuous" | "discrete";
-  const params = dist.params;
   const properties = {} as { [property: string]: number };
 
   let mean, median, std: number;
-  switch (type) {
+  switch (distType) {
     case "continuous": {
-      mean = continuousDists[name].mean(...(Object.values(params) as number[]));
-      median = continuousDists[name].median(...(Object.values(params) as number[]));
-      std = continuousDists[name].std(...(Object.values(params) as number[]));
+      mean = continuousDists[distName].mean(...(Object.values(distParams) as number[]));
+      median = continuousDists[distName].median(...(Object.values(distParams) as number[]));
+      std = continuousDists[distName].std(...(Object.values(distParams) as number[]));
       break;
     }
 
     case "discrete": {
-      mean = discreteDists[name].mean(...(Object.values(params) as number[]));
-      median = discreteDists[name].median(...(Object.values(params) as number[]));
-      std = discreteDists[name].std(...(Object.values(params) as number[]));
+      mean = discreteDists[distName].mean(...(Object.values(distParams) as number[]));
+      median = discreteDists[distName].median(...(Object.values(distParams) as number[]));
+      std = discreteDists[distName].std(...(Object.values(distParams) as number[]));
       break;
     }
   }

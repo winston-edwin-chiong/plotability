@@ -10,9 +10,12 @@ import {
   DistributionSelect,
   Figure,
   QuantileSettings,
-  DistributionProperties
+  DistributionProperties,
 } from "./components";
-import { getDistributionData } from "./utils/calculations";
+import {
+  getDistributionData,
+  getDistributionProperties,
+} from "./utils/calculations";
 import { Distribution, Data } from "./interfaces/interfaces";
 import { validateDistribution } from "./utils/validations";
 import Markdown from "react-markdown";
@@ -90,7 +93,11 @@ export default function App() {
         type: (type as "continuous") || "discrete" || "",
         markdownContent: markdownContent,
         params: newParamsValues,
-        properties: {},
+        properties: getDistributionProperties(
+          value,
+          type as "continuous" | "discrete",
+          newParamsValues
+        ),
         errors: {},
       },
       ...distributions.slice(index + 1),
@@ -146,7 +153,17 @@ export default function App() {
   ) => {
     const newDistributions = distributions.map((dist, i) => {
       if (i === index) {
-        return { ...dist, params: { ...dist.params, [parameter]: value } };
+        const newParamsValues = { ...dist.params, [parameter]: value };
+        const newProperties = getDistributionProperties(
+          dist.name,
+          dist.type as "continuous" | "discrete",
+          newParamsValues
+        );
+        return {
+          ...dist,
+          params: newParamsValues,
+          properties: newProperties,
+        };
       }
       return dist;
     });
@@ -161,7 +178,17 @@ export default function App() {
     // The sliders also update the chart. This function is called when the user stops dragging the slider.
     const updatedDistributions = distributions.map((dist, i) => {
       if (i === index) {
-        return { ...dist, params: { ...dist.params, [parameter]: value } };
+        const newParamsValues = { ...dist.params, [parameter]: value };
+        const newProperties = getDistributionProperties(
+          dist.name,
+          dist.type as "continuous" | "discrete",
+          newParamsValues
+        );
+        return {
+          ...dist,
+          params: newParamsValues,
+          properties: newProperties,
+        };
       }
       return dist;
     });
