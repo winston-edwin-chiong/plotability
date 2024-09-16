@@ -13,6 +13,8 @@ import {
 import { getDistributionData } from "./utils/calculations";
 import { Distribution, Data } from "./interfaces/interfaces";
 import { validateDistribution } from "./utils/validations";
+import Markdown from "react-markdown";
+import markdown from "./pages/test.md"
 
 /* Note that '0' is a valid parameter value for some distributions. */
 /* The code gets messy and there's a lot of type gymastics. A lot of voodoo. */
@@ -342,6 +344,7 @@ export default function App() {
           {JSON.stringify(quantiles)}
         </p>
       </div>
+      <Markdown children={markdown}></Markdown>
       <div>
         <Figure data={data} distFunc={distFunction} />
       </div>
