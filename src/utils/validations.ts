@@ -45,29 +45,6 @@ export function validateDistribution(dist: Distribution): {
 }
 
 /**
- * This function returns a dictionary of default slider properties for each parameter of the distribution.
- * @param dist The `Distribution` object to get sliders for.
- * @returns A dictionary of slider properties where the key is the parameter name and the value is the slider properties.
- */
-export function getSliders(dist: Distribution) {
-  switch (dist.type) {
-    case "continuous": {
-      return validateContinuousDists[dist.name]?.sliders(
-        dist.params as { [parameter: string]: number }
-      );
-    }
-    case "discrete": {
-      return validateDiscreteDists[dist.name]?.sliders(
-        dist.params as { [parameter: string]: number }
-      );
-    }
-
-    default:
-      return {};
-  }
-}
-
-/**
  * An object containing functions to validate continuous distributions.
  * The `validate` function takes a dictionary of parameters and dictionary of errors and updates the error dictionary.
  * The `sliders` function takes a dictionary of parameters returns a dictionary of default slider properties for each parameter.
@@ -80,9 +57,6 @@ const validateContinuousDists: {
     ) => {
       [parameter: string]: string;
     };
-    sliders: (params: { [parameter: string]: number }) => {
-      [parameter: string]: { min: number; max: number; step: number };
-    };
   };
 } = {
   arcsine: {
@@ -92,12 +66,6 @@ const validateContinuousDists: {
         errors["b"] = "Parameter a must be less than b!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        a: { min: -10, max: 10, step: 0.1 },
-        b: { min: -10, max: 10, step: 0.1 },
-      };
     },
   },
   beta: {
@@ -110,12 +78,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        alpha: { min: 1, max: 10, step: 0.1 },
-        beta: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   betaprime: {
     validate: (params, errors) => {
@@ -127,12 +89,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        alpha: { min: 1, max: 10, step: 0.1 },
-        beta: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   cauchy: {
     validate: (params, errors) => {
@@ -140,12 +96,6 @@ const validateContinuousDists: {
         errors["gamma"] = "Scale parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        x0: { min: -10, max: 10, step: 0.1 },
-        gamma: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   chi: {
@@ -155,11 +105,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        k: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   chisquare: {
     validate: (params, errors) => {
@@ -168,11 +113,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        k: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   cosine: {
     validate: (params, errors) => {
@@ -180,12 +120,6 @@ const validateContinuousDists: {
         errors["s"] = "Scale parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        mu: { min: -10, max: 10, step: 0.1 },
-        s: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   erlang: {
@@ -198,12 +132,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        k: { min: 1, max: 10, step: 0.1 },
-        lambda: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   exponential: {
     validate: (params, errors) => {
@@ -211,11 +139,6 @@ const validateContinuousDists: {
         errors["lambda"] = "Rate parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        lambda: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   f: {
@@ -228,12 +151,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        d1: { min: 1, max: 10, step: 0.1 },
-        d2: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   frechet: {
     validate: (params, errors) => {
@@ -244,13 +161,6 @@ const validateContinuousDists: {
         errors["s"] = "Scale parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        alpha: { min: 1, max: 10, step: 0.1 },
-        s: { min: 1, max: 10, step: 0.1 },
-        m: { min: -10, max: 10, step: 0.1 },
-      };
     },
   },
   gamma: {
@@ -263,12 +173,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        alpha: { min: 1, max: 10, step: 0.1 },
-        beta: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   gumbel: {
     validate: (params, errors) => {
@@ -276,12 +180,6 @@ const validateContinuousDists: {
         errors["beta"] = "Scale parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        mu: { min: -10, max: 10, step: 0.1 },
-        beta: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   invgamma: {
@@ -294,12 +192,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        alpha: { min: 1, max: 10, step: 0.1 },
-        beta: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   kumaraswamy: {
     validate: (params, errors) => {
@@ -311,12 +203,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        a: { min: 1, max: 10, step: 0.1 },
-        b: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   laplace: {
     validate: (params, errors) => {
@@ -324,12 +210,6 @@ const validateContinuousDists: {
         errors["b"] = "Scale parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        mu: { min: -10, max: 10, step: 0.1 },
-        b: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   levy: {
@@ -339,12 +219,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        mu: { min: -10, max: 10, step: 0.1 },
-        c: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   logistic: {
     validate: (params, errors) => {
@@ -352,12 +226,6 @@ const validateContinuousDists: {
         errors["s"] = "Scale parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        mu: { min: -10, max: 10, step: 0.1 },
-        s: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   lognormal: {
@@ -367,12 +235,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        mu: { min: -10, max: 10, step: 0.1 },
-        sigma: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   normal: {
     validate: (params, errors) => {
@@ -380,12 +242,6 @@ const validateContinuousDists: {
         errors["sigma"] = "Standard deviation must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        mu: { min: -10, max: 10, step: 0.1 },
-        sigma: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   pareto1: {
@@ -398,12 +254,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        alpha: { min: 1, max: 10, step: 0.1 },
-        beta: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   rayleigh: {
     validate: (params, errors) => {
@@ -412,11 +262,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        sigma: { min: 1, max: 10, step: 0.1 },
-      };
-    },
   },
   t: {
     validate: (params, errors) => {
@@ -424,11 +269,6 @@ const validateContinuousDists: {
         errors["v"] = "Degrees of freedom must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        v: { min: 1, max: 10, step: 0.1 },
-      };
     },
   },
   triangular: {
@@ -444,13 +284,6 @@ const validateContinuousDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        a: { min: -10, max: 10, step: 0.1 },
-        b: { min: -10, max: 10, step: 0.1 },
-        c: { min: -10, max: 1, step: 0.1 },
-      };
-    },
   },
   uniform: {
     validate: (params, errors) => {
@@ -459,12 +292,6 @@ const validateContinuousDists: {
         errors["b"] = "Parameter a must be less than b!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        a: { min: -10, max: 10, step: 0.1 },
-        b: { min: -10, max: 10, step: 0.1 },
-      };
     },
   },
 };
@@ -482,9 +309,6 @@ const validateDiscreteDists: {
     ) => {
       [parameter: string]: string;
     };
-    sliders: (params: { [parameter: string]: number }) => {
-      [parameter: string]: { min: number; max: number; step: number };
-    };
   };
 } = {
   bernoulli: {
@@ -493,11 +317,6 @@ const validateDiscreteDists: {
         errors["p"] = "Probability must be between 0 and 1!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        p: { min: 0, max: 1, step: 0.05 },
-      };
     },
   },
   binomial: {
@@ -509,12 +328,6 @@ const validateDiscreteDists: {
         errors["p"] = "Probability must be between 0 and 1!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        n: { min: 0, max: 25, step: 1 },
-        p: { min: 0, max: 1, step: 0.05 },
-      };
     },
   },
   discrete_uniform: {
@@ -529,12 +342,6 @@ const validateDiscreteDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        a: { min: -10, max: 10, step: 1 },
-        b: { min: -10, max: 10, step: 1 },
-      };
-    },
   },
   geometric: {
     validate: (params, errors) => {
@@ -543,11 +350,6 @@ const validateDiscreteDists: {
           "Probability must be greater 0 and less than or equal to 1!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        p: { min: 0, max: 1, step: 0.05 },
-      };
     },
   },
   hypergeometric: {
@@ -573,13 +375,6 @@ const validateDiscreteDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        N: { min: 0, max: 25, step: 1 },
-        K: { min: 0, max: 25, step: 1 },
-        n: { min: 0, max: 25, step: 1 },
-      };
-    },
   },
   negative_binomial: {
     validate: (params, errors) => {
@@ -592,12 +387,6 @@ const validateDiscreteDists: {
       }
       return errors;
     },
-    sliders: () => {
-      return {
-        r: { min: 1, max: 25, step: 1 },
-        p: { min: 0.01, max: 1, step: 0.05 },
-      };
-    },
   },
   poisson: {
     validate: (params, errors) => {
@@ -605,11 +394,6 @@ const validateDiscreteDists: {
         errors["lambda"] = "Rate parameter must be greater than 0!";
       }
       return errors;
-    },
-    sliders: () => {
-      return {
-        lambda: { min: 1, max: 25, step: 1 },
-      };
     },
   },
 };

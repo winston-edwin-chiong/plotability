@@ -4,411 +4,642 @@
       "label": "Arcsine",
       "value": "arcsine",
       "type": "continuous",
-      "params": [
-        "a",
-        "b"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["a", "b"],
+      "quantiles": [0.01, 0.99],
+      "sliders": [
+        {
+          "param": "a",
+          "min": -10,
+          "max": 10,
+          "step": 0.5
+        },
+        {
+          "param": "b",
+          "min": -10,
+          "max": 10,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Beta",
       "value": "beta",
       "type": "continuous",
-      "params": [
-        "alpha",
-        "beta"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["alpha", "beta"],
+      "quantiles": [0, 1],
+      "sliders": [
+        {
+          "param": "alpha",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "beta",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Beta Prime",
       "value": "betaprime",
       "type": "continuous",
-      "params": [
-        "alpha",
-        "beta"
-      ],
-      "quantiles": [
-        0,
-        0.95
+      "params": ["alpha", "beta"],
+      "quantiles": [0, 0.99],
+      "sliders": [
+        {
+          "param": "alpha",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "beta",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Cauchy",
       "value": "cauchy",
       "type": "continuous",
-      "params": [
-        "x0",
-        "gamma"
-      ],
-      "quantiles": [
-        0.05,
-        0.95
+      "params": ["x0", "gamma"],
+      "quantiles": [0.05, 0.95],
+      "sliders": [
+        {
+          "param": "x0",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "gamma",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Chi",
       "value": "chi",
       "type": "continuous",
-      "params": [
-        "k"
-      ],
-      "quantiles": [
-        0,
-        0.99
+      "params": ["k"],
+      "quantiles": [0, 0.995],
+      "sliders": [
+        {
+          "param": "k",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Chi-Squared",
       "value": "chisquare",
       "type": "continuous",
-      "params": [
-        "k"
-      ],
-      "quantiles": [
-        0,
-        0.99
+      "params": ["k"],
+      "quantiles": [0, 0.995],
+      "sliders": [
+        {
+          "param": "k",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Cosine",
       "value": "cosine",
       "type": "continuous",
-      "params": [
-        "mu",
-        "s"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["mu", "s"],
+      "quantiles": [0, 1],
+      "sliders": [
+        {
+          "param": "mu",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "s",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Erlang",
       "value": "erlang",
       "type": "continuous",
-      "params": [
-        "k",
-        "lambda"
-      ],
-      "quantiles": [
-        0,
-        0.999
+      "params": ["k", "lambda"],
+      "quantiles": [0, 0.999],
+      "sliders": [
+        {
+          "param": "k",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "lambda",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Exponential",
       "value": "exponential",
       "type": "continuous",
-      "params": [
-        "lambda"
-      ],
-      "quantiles": [
-        0,
-        0.999
+      "params": ["lambda"],
+      "quantiles": [0, 0.999],
+      "sliders": [
+        {
+          "param": "lambda",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Fisher's F",
       "value": "f",
       "type": "continuous",
-      "params": [
-        "d1",
-        "d2"
-      ],
-      "quantiles": [
-        0,
-        0.95
+      "params": ["d1", "d2"],
+      "quantiles": [0, 0.95],
+      "sliders": [
+        {
+          "param": "d1",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "d2",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Fréchet",
       "value": "frechet",
       "type": "continuous",
-      "params": [
-        "alpha",
-        "s",
-        "m"
-      ],
-      "quantiles": [
-        0,
-        0.95
+      "params": ["alpha", "s", "m"],
+      "quantiles": [0, 0.95],
+      "sliders": [
+        {
+          "param": "alpha",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "s",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "m",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Gamma",
       "value": "gamma",
       "type": "continuous",
-      "params": [
-        "alpha",
-        "beta"
-      ],
-      "quantiles": [
-        0,
-        0.999
+      "params": ["alpha", "beta"],
+      "quantiles": [0, 0.999],
+      "sliders": [
+        {
+          "param": "alpha",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "beta",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Gumbel",
       "value": "gumbel",
       "type": "continuous",
-      "params": [
-        "mu",
-        "beta"
-      ],
-      "quantiles": [
-        0.005,
-        0.995
+      "params": ["mu", "beta"],
+      "quantiles": [0.005, 0.995],
+      "sliders": [
+        {
+          "param": "mu",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "beta",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Inverse Gamma",
       "value": "invgamma",
       "type": "continuous",
-      "params": [
-        "alpha",
-        "beta"
-      ],
-      "quantiles": [
-        0,
-        0.95
+      "params": ["alpha", "beta"],
+      "quantiles": [0, 0.95],
+      "sliders": [
+        {
+          "param": "alpha",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "beta",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Kumaraswamy",
       "value": "kumaraswamy",
       "type": "continuous",
-      "params": [
-        "a",
-        "b"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["a", "b"],
+      "quantiles": [0, 1],
+      "sliders": [
+        {
+          "param": "a",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "b",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Laplace",
       "value": "laplace",
       "type": "continuous",
-      "params": [
-        "mu",
-        "b"
-      ],
-      "quantiles": [
-        0.005,
-        0.995
+      "params": ["mu", "b"],
+      "quantiles": [0.005, 0.995],
+      "sliders": [
+        {
+          "param": "mu",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "b",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Lévy",
       "value": "levy",
       "type": "continuous",
-      "params": [
-        "mu",
-        "c"
-      ],
-      "quantiles": [
-        0,
-        0.75
+      "params": ["mu", "c"],
+      "quantiles": [0, 0.75],
+      "sliders": [
+        {
+          "param": "mu",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "c",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Logistic",
       "value": "logistic",
       "type": "continuous",
-      "params": [
-        "mu",
-        "s"
-      ],
-      "quantiles": [
-        0.01,
-        0.99
+      "params": ["mu", "s"],
+      "quantiles": [0.01, 0.99],
+      "sliders": [
+        {
+          "param": "mu",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "s",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Lognormal",
       "value": "lognormal",
       "type": "continuous",
-      "params": [
-        "mu",
-        "sigma"
-      ],
-      "quantiles": [
-        0,
-        0.95
+      "params": ["mu", "sigma"],
+      "quantiles": [0, 0.95],
+      "sliders": [
+        {
+          "param": "mu",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "sigma",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Normal",
       "value": "normal",
       "type": "continuous",
-      "params": [
-        "mu",
-        "sigma"
-      ],
-      "quantiles": [
-        0.001,
-        0.999
+      "params": ["mu", "sigma"],
+      "quantiles": [0.001, 0.999],
+      "sliders": [
+        {
+          "param": "mu",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "sigma",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Pareto",
       "value": "pareto1",
       "type": "continuous",
-      "params": [
-        "alpha",
-        "beta"
-      ],
-      "quantiles": [
-        0,
-        0.95
+      "params": ["alpha", "beta"],
+      "quantiles": [0, 0.95],
+      "sliders": [
+        {
+          "param": "alpha",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "beta",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Rayleigh",
       "value": "rayleigh",
       "type": "continuous",
-      "params": [
-        "sigma"
-      ],
-      "quantiles": [
-        0,
-        0.99
+      "params": ["sigma"],
+      "quantiles": [0, 0.99],
+      "sliders": [
+        {
+          "param": "sigma",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Student's T",
       "value": "t",
       "type": "continuous",
-      "params": [
-        "v"
-      ],
-      "quantiles": [
-        0.01,
-        0.99
+      "params": ["v"],
+      "quantiles": [0.01, 0.99],
+      "sliders": [
+        {
+          "param": "v",
+          "min": 1,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Triangular",
       "value": "triangular",
       "type": "continuous",
-      "params": [
-        "a",
-        "b",
-        "c"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["a", "b", "c"],
+      "quantiles": [0, 1],
+      "sliders": [
+        {
+          "param": "a",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "b",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "c",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Uniform",
       "value": "uniform",
       "type": "continuous",
-      "params": [
-        "a",
-        "b"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["a", "b"],
+      "quantiles": [0, 1],
+      "sliders": [
+        {
+          "param": "a",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        },
+        {
+          "param": "b",
+          "min": -30,
+          "max": 30,
+          "step": 0.5
+        }
       ]
     },
     {
       "label": "Bernoulli",
       "value": "bernoulli",
       "type": "discrete",
-      "params": [
-        "p"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["p"],
+      "quantiles": [0, 1],
+      "sliders": [
+        {
+          "param": "p",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
       ]
     },
     {
       "label": "Binomial",
       "value": "binomial",
       "type": "discrete",
-      "params": [
-        "n",
-        "p"
-      ],
-      "quantiles": [
-        0.005,
-        0.995
+      "params": ["n", "p"],
+      "quantiles": [0.005, 0.995],
+      "sliders": [
+        {
+          "param": "n",
+          "min": 0,
+          "max": 30,
+          "step": 1
+        },
+        {
+          "param": "p",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
       ]
     },
     {
       "label": "Discrete Uniform",
       "value": "discrete_uniform",
       "type": "discrete",
-      "params": [
-        "a",
-        "b"
-      ],
-      "quantiles": [
-        0,
-        1
+      "params": ["a", "b"],
+      "quantiles": [0, 1],
+      "sliders": [
+        {
+          "param": "a",
+          "min": -30,
+          "max": 30,
+          "step": 1
+        },
+        {
+          "param": "b",
+          "min": -30,
+          "max": 30,
+          "step": 1
+        }
       ]
     },
     {
       "label": "Geometric",
       "value": "geometric",
       "type": "discrete",
-      "params": [
-        "p"
-      ],
-      "quantiles": [
-        0,
-        0.995
+      "params": ["p"],
+      "quantiles": [0, 0.995],
+      "sliders": [
+        {
+          "param": "p",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
       ]
     },
     {
       "label": "Hypergeometric",
       "value": "hypergeometric",
       "type": "discrete",
-      "params": [
-        "N",
-        "K",
-        "n"
-      ],
-      "quantiles": [
-        0.005,
-        0.995
+      "params": ["N", "K", "n"],
+      "quantiles": [0.005, 0.995],
+      "sliders": [
+        {
+          "param": "N",
+          "min": 0,
+          "max": 30,
+          "step": 1
+        },
+        {
+          "param": "K",
+          "min": 0,
+          "max": 30,
+          "step": 1
+        },
+        {
+          "param": "n",
+          "min": 0,
+          "max": 30,
+          "step": 1
+        }
       ]
     },
     {
       "label": "Negative Binomial",
       "value": "negative_binomial",
       "type": "discrete",
-      "params": [
-        "r",
-        "p"
-      ],
-      "quantiles": [
-        0.005,
-        0.995
+      "params": ["r", "p"],
+      "quantiles": [0.005, 0.995],
+      "sliders": [
+        {
+          "param": "r",
+          "min": 1,
+          "max": 30,
+          "step": 1
+        },
+        {
+          "param": "p",
+          "min": 0.01,
+          "max": 1,
+          "step": 0.01
+        }
       ]
     },
     {
       "label": "Poisson",
       "value": "poisson",
       "type": "discrete",
-      "params": [
-        "lambda"
-      ],
-      "quantiles": [
-        0.005,
-        0.995
+      "params": ["lambda"],
+      "quantiles": [0.005, 0.995],
+      "sliders": [
+        {
+          "param": "lambda",
+          "min": 1,
+          "max": 30,
+          "step": 1
+        }
       ]
     }
   ]

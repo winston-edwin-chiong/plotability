@@ -4,6 +4,45 @@ import { Point, Distribution } from "../interfaces/interfaces";
 const DECIMAL_PRECISION = 12;
 
 /**
+ * This function calculates the data for a distribution.
+ * @param dist The `Distribution` object.
+ * @param distFunc The distribution function that will be used to calculate the data.
+ * @returns A array of `Point` objects containing the x- and y-values of the distribution.
+ */
+export function getDistributionData(
+  dist: Distribution,
+  distFunc: string,
+  quantiles: [number, number]
+): Point[] {
+  const name = dist.name;
+  const type = dist.type;
+  const params = dist.params as { [parameter: string]: number };
+
+  switch (type) {
+    case "continuous": {
+      const func = continuousDists[name][distFunc as "pdf_pmf" | "cdf"];
+
+      return calculateContinuousDistData(
+        func,
+        params,
+        getXBounds(params, quantiles, continuousDists[name].quantile, type)
+      );
+    }
+
+    case "discrete": {
+      const func = discreteDists[name][distFunc as "pdf_pmf" | "cdf"];
+
+      return calculateDiscreteDistData(
+        func,
+        params,
+        getXBounds(params, quantiles, discreteDists[name].quantile, type)
+      );
+    }
+  }
+  return [];
+}
+
+/**
  * An object containing the continuous distributions and their associated functions,
  * and a function that calculates appropriate x-value bounds from a distribution's parameters.
  */
@@ -221,7 +260,7 @@ function calculateContinuousDistData(
     const y = Number(
       distFunc(i, ...Object.values(params)).toFixed(DECIMAL_PRECISION)
     );
-    const x = Number(i.toFixed(12));
+    const x = Number(i.toFixed(DECIMAL_PRECISION));
 
     if (!isFinite(y)) {
       console.warn("Skipping point with non-finite y-values.");
@@ -307,43 +346,4 @@ function getXBounds(
     default:
       return [];
   }
-}
-
-/**
- * This function calculates the data for a distribution.
- * @param dist The `Distribution` object.
- * @param distFunc The distribution function that will be used to calculate the data.
- * @returns A array of `Point` objects containing the x- and y-values of the distribution.
- */
-export function getDistributionData(
-  dist: Distribution,
-  distFunc: string,
-  quantiles: [number, number]
-): Point[] {
-  const name = dist.name;
-  const type = dist.type;
-  const params = dist.params as { [parameter: string]: number };
-
-  switch (type) {
-    case "continuous": {
-      const func = continuousDists[name][distFunc as "pdf_pmf" | "cdf"];
-
-      return calculateContinuousDistData(
-        func,
-        params,
-        getXBounds(params, quantiles, continuousDists[name].quantile, type)
-      );
-    }
-
-    case "discrete": {
-      const func = discreteDists[name][distFunc as "pdf_pmf" | "cdf"];
-
-      return calculateDiscreteDistData(
-        func,
-        params,
-        getXBounds(params, quantiles, discreteDists[name].quantile, type)
-      );
-    }
-  }
-  return [];
 }

@@ -2,7 +2,6 @@ import "@mantine/core/styles.css";
 import DistributionJSON from "../distributions_data.json";
 import { Slider, NumberInput, Group, Stack } from "@mantine/core";
 import { Distribution } from "../interfaces/interfaces";
-import { getSliders } from "../utils/validations";
 import { useState } from "react";
 
 const MIN = -1 * 10 ** 7;
@@ -34,31 +33,41 @@ export default function ParameterSettings({
   ) => void;
   index: number;
 }) {
+  const distData = DistributionJSON.distributions.find(
+    (dist) => dist.value === distribution.name
+  );
+
   return (
     <>
-      {DistributionJSON.distributions
-        .find((dist) => dist.value === distribution.name)
-        ?.params.map((parameter) => (
-          <Stack key={parameter}>
-            <NumberInput
-              value={distribution.params[parameter] as number}
-              label={parameter}
-              onChange={(value) => inputOnChange(value, parameter, index)}
-              error={distribution.errors?.[parameter]}
-              min={MIN}
-              decimalScale={DECIMAL_SCALE}
-              max={MAX}
-              clampBehavior="strict"
-            />
-            <ParameterSlider
-              distribution={distribution}
-              parameter={parameter}
-              sliderOnChange={sliderOnChange}
-              sliderOnChangeEnd={sliderOnChangeEnd}
-              index={index}
-            />
-          </Stack>
-        ))}
+      {distData?.params.map((parameter) => (
+        <Stack key={parameter}>
+          <NumberInput
+            value={distribution.params[parameter] as number}
+            label={parameter}
+            onChange={(value) => inputOnChange(value, parameter, index)}
+            error={distribution.errors?.[parameter]}
+            min={MIN}
+            decimalScale={DECIMAL_SCALE}
+            max={MAX}
+            clampBehavior="strict"
+          />
+          <ParameterSlider
+            distribution={distribution}
+            parameter={parameter}
+            sliderOnChange={sliderOnChange}
+            sliderOnChangeEnd={sliderOnChangeEnd}
+            defaultSliders={
+              distData.sliders.find((param) => param.param === parameter) as {
+                param: string;
+                min: number;
+                max: number;
+                step: number;
+              }
+            }
+            index={index}
+          />
+        </Stack>
+      ))}
     </>
   );
 }
@@ -69,6 +78,7 @@ function ParameterSlider({
   sliderOnChange,
   sliderOnChangeEnd,
   index,
+  defaultSliders,
 }: {
   distribution: Distribution;
   parameter: string;
@@ -83,17 +93,16 @@ function ParameterSlider({
     index: number
   ) => void;
   index: number;
+  defaultSliders: { param: string; min: number; max: number; step: number };
 }) {
-  const sliders = getSliders(distribution);
-
   const [sliderSettings, setSliderSettings] = useState<{
     min: number | string;
     max: number | string;
     step: number | string;
   }>({
-    min: sliders[parameter].min,
-    max: sliders[parameter].max,
-    step: sliders[parameter].step,
+    min: defaultSliders.min,
+    max: defaultSliders.max,
+    step: defaultSliders.step,
   });
 
   const handleSliderSettingChange = (
@@ -111,9 +120,7 @@ function ParameterSlider({
       const parsedValue = parseFloat(replaced);
       setSliderSettings({
         ...sliderSettings,
-        [setting]: isNaN(parsedValue)
-          ? sliders[parameter][setting]
-          : parsedValue
+        [setting]: isNaN(parsedValue) ? defaultSliders[setting] : parsedValue,
       });
     }
   };
