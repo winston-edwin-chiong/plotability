@@ -9,7 +9,7 @@ interface Distribution {
   params: { [parameter: string]: number | string };
   markdownContent: string;
   errors: { [option: string]: string };
-  properties: { [property: string]: number };
+  properties: { [property: string]: number | string };
 }
 
 interface Data {

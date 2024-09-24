@@ -116,7 +116,12 @@ export default function App() {
     // Validate the distribution parameters before plotting.
     const newDistributions = distributions.map((dist) => {
       const errors = validateDistribution(dist);
-      return { ...dist, errors: errors };
+      const newProperties = getDistributionProperties(
+        dist.name,
+        dist.type as "continuous" | "discrete",
+        dist.params
+      );
+      return { ...dist, errors: errors, properties: newProperties };
     });
     setDistributions(newDistributions);
 
@@ -154,15 +159,9 @@ export default function App() {
     const newDistributions = distributions.map((dist, i) => {
       if (i === index) {
         const newParamsValues = { ...dist.params, [parameter]: value };
-        const newProperties = getDistributionProperties(
-          dist.name,
-          dist.type as "continuous" | "discrete",
-          newParamsValues
-        );
         return {
           ...dist,
           params: newParamsValues,
-          properties: newProperties,
         };
       }
       return dist;

@@ -51,10 +51,10 @@ export function getDistributionData(
  * - `std` - The standard deviation of the distribution.
  */
 export function getDistributionProperties(distName: string, distType: "continuous" | "discrete", distParams: {[param: string]: number | string}): {
-  [property: string]: number;
+  [property: string]: number | string;
 } {
-  const properties = {} as { [property: string]: number };
-
+  const properties = {} as { [property: string]: number | string };
+  console.log("Caclulating properties for", distName, distType, distParams);
   let mean, median, std: number;
   switch (distType) {
     case "continuous": {
@@ -72,9 +72,9 @@ export function getDistributionProperties(distName: string, distType: "continuou
     }
   }
 
-  properties.mean = mean;
-  properties.median = median;
-  properties.std = std;
+  properties.mean = Number.isNaN(mean) ? "N/A" : mean;
+  properties.median = Number.isNaN(median) ? "N/A" : median;
+  properties.std = Number.isNaN(std) ? "N/A" : std;
   return properties;
 }
 

@@ -15,6 +15,7 @@ import {
   Legend,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
+import annotationPlugin from "chartjs-plugin-annotation";
 
 ChartJS.register(
   CategoryScale,
@@ -28,6 +29,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  annotationPlugin
 );
 
 // https://coolors.co/3c91e6-342e37-a2d729-fafffd-fa824c
@@ -75,6 +77,17 @@ const Figure = memo(
         },
         colors: {
           enabled: true,
+        },
+        annotation: {
+          annotations: {
+            verticalLine: {
+              type: "line" as const,
+              scaleID: "x",
+              value: 0,
+              borderWidth: 3,
+              borderDash: [5, 5],
+            },
+          },
         },
       },
     };
