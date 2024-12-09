@@ -34,10 +34,15 @@ ChartJS.register(
 
 // https://coolors.co/3c91e6-342e37-a2d729-fafffd-fa824c
 const colors = [
-  "rgba(250, 130, 76, 0.6)",
-  "rgba(60, 145, 230, 0.6)",
-  "rgba(162, 215, 41, 0.6)",
+  'rgba(127, 201, 127, 0.5)',
+  'rgba(190, 174, 212, 0.5)',
+  'rgba(253, 192, 134, 0.5)'
 ];
+// const colors = [
+//   "rgba(250, 130, 76, 0.6)",
+//   "rgba(60, 145, 230, 0.6)",
+//   "rgba(162, 215, 41, 0.6)",
+// ];
 
 const Figure = memo(
   ({ data, distFunc }: { data: Data[]; distFunc: string }) => {

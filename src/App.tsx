@@ -11,6 +11,7 @@ import {
   Figure,
   QuantileSettings,
   DistributionProperties,
+  DistributionCalculator,
 } from "./components";
 import {
   getDistributionData,
@@ -334,6 +335,7 @@ export default function App() {
             distributionOnChange={handleDistributionChange}
             index={index}
           />
+          <DistributionCalculator />
           <ParameterSettings
             distribution={distribution}
             inputOnChange={handleParamChange}
