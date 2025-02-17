@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useRef } from "react";
 import { Data } from "../interfaces/interfaces";
 import {
   CategoryScale,
@@ -16,6 +16,8 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import annotationPlugin from "chartjs-plugin-annotation";
+import { Button } from "@mantine/core";
+import { saveAs } from "file-saver";
 
 ChartJS.register(
   CategoryScale,
@@ -46,6 +48,8 @@ const colors = [
 
 const Figure = memo(
   ({ data, distFunc }: { data: Data[]; distFunc: string }) => {
+    const chartRef = useRef<ChartJS>(null);
+
     const chartData = {
       datasets: data.map((dist, i) => ({
         type: getChartType(dist.type),
@@ -53,6 +57,7 @@ const Figure = memo(
         data: dist.data,
         fill: true,
         backgroundColor: colors[i],
+        hoverBackgroundColor: colors[i],
         pointRadius: 0,
         tension: 0.75,
       })),
@@ -75,7 +80,10 @@ const Figure = memo(
       },
       plugins: {
         tooltip: { enabled: false },
-        legend: { position: "top" as const },
+        legend: { 
+          position: "top" as const,
+          display: data[0].data.length > 0,
+        },
         title: {
           display: true,
           text: getChartTitle(distFunc),
@@ -85,19 +93,32 @@ const Figure = memo(
         },
         annotation: {
           annotations: {
-            verticalLine: {
-              type: "line" as const,
-              scaleID: "x",
-              value: 0,
-              borderWidth: 3,
-              borderDash: [5, 5],
-            },
+            // verticalLine: {
+            //   type: "line" as const,
+            //   scaleID: "x",
+            //   value: 0,
+            //   borderWidth: 3,
+            //   borderDash: [5, 5],
+            // },
           },
         },
       },
     };
 
-    return <Chart data={chartData} options={options} type={"line"} />;
+    const downloadChart = () => {
+      const chart = chartRef.current;
+      if (chart) {
+        const imageUrl = chart.toBase64Image();
+        saveAs(imageUrl, "chart.png");
+      }
+    };
+
+    return (
+      <div>
+        <Chart ref={chartRef} data={chartData} options={options} type={"line"} />
+        {chartRef.current ? <Button onClick={downloadChart}>Download Chart!</Button> : null}
+      </div>
+    );
   }
 );
 

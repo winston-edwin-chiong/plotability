@@ -22,6 +22,7 @@ import { validateDistribution } from "./utils/validations";
 import Markdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import { theme } from "./utils/theme";
 
 /* Note that '0' is a valid parameter value for some distributions. */
 /* The code gets messy and there's a lot of type gymastics. A lot of voodoo. */
@@ -306,7 +307,7 @@ export default function App() {
   };
 
   return (
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       <Header />
       <Radio.Group
         value={distCategory}
